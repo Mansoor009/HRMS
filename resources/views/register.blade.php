@@ -110,20 +110,20 @@
 
 
             $("#submitForm").validate({
-                // rules: {
-                //     user_name: {
-                //         required: true,
-                //         minlength: 3
-                //     },
-                //     email: {
-                //         required: true,
-                //         email: true,
-                //     },
-                //     password: {
-                //         required: true,
-                //         minlength: 5
-                //     },
-                // },
+                rules: {
+                    // user_name: {
+                    //     required: true,
+                    //     minlength: 3
+                    // },
+                    // email: {
+                    //     required: true,
+                    //     email: true,
+                    // },
+                    password: {
+                        required: true,
+                        minlength: 5
+                    },
+                },
                 submitHandler: function() {
                     let data = $("#submitForm").serialize();
                     $('.error').text('');

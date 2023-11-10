@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ResetPassword;
-use App\Models\Test;
 use App\Models\User;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -53,7 +52,7 @@ class showController extends Controller
             $request->validate([
                 'user_name' => 'required|unique:users',
                 'email' => 'required|email|unique:users',
-                'password' => 'required',
+                'password' => 'required|unique:users',
                 'mobile_number' => 'required|numeric|digits:10'
             ]);
 
