@@ -21,6 +21,12 @@
     <title>Registration Form</title>
 
 </head>
+<style>
+    .fe-eye {
+        cursor: pointer;
+        border-radius: 0 4px 4px 0 !important;
+    }
+</style>
 
 <body class="main-body bg-light  login-img">
 
@@ -59,9 +65,10 @@
                                         id="email" name="email">
                                     <span class="email_error error"></span>
                                 </div>
-                                <div class="form-group">
+                                <div class="input-group mb-3">
                                     <input class="form-control" placeholder="Enter your Password" type="password"
                                         id="password" name="password">
+                                    <i class="input-group-text fe fe-eye"></i>
                                     <span class="password_error error"></span>
                                 </div>
                                 <button class="btn btn-primary btn-block" type="submit">Log In</button>
@@ -91,6 +98,20 @@
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        let eyePass = document.querySelector('.fe-eye');
+        let inputPass = document.querySelector('#password')
+        eyePass.addEventListener('click', function() {
+            if (this.classList.contains('fe-eye')) {
+                this.classList.remove('fe-eye');
+                this.classList.add('fe-eye-off');
+                inputPass.type = 'text'
+            } else {
+                this.classList.add('fe-eye');
+                this.classList.remove('fe-eye-off');
+                inputPass.type = 'password'
+            }
+
+        })
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -99,7 +120,7 @@
         $("#loginForm").validate({
             rules: {
                 email: "required",
-                password: "required"
+                // password: "required"
             },
             submitHandler: function() {
                 let data = $("#loginForm").serialize()
@@ -133,7 +154,7 @@
                             }, 500);
 
 
-                        } else if(res.status == "member"){
+                        } else if (res.status == "member") {
                             Swal.fire({
                                 icon: "success",
                                 title: "Member logged in successfully",

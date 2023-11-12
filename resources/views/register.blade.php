@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.css') }}">
     <title>Registration Form</title>
 </head>
+<style>
+    .fe-eye {
+        cursor: pointer;
+        border-radius: 0 4px 4px 0 !important;
+    }
+</style>
 
 <body class="main-body  login-img">
     <!-- Loader -->
@@ -27,8 +33,7 @@
             @if ($errors)
                 <div class="col-lg-12">
                     @foreach ($errors as $error)
-                        <div class="alert alert-danger">{!!$error!!}</div>
-
+                        <div class="alert alert-danger">{!! $error !!}</div>
                     @endforeach
                 </div>
             @endif
@@ -55,30 +60,32 @@
                             <h4>Please Register with Azira</h4>
                             <form id="submitForm">
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Enter your Username " type="text"
+                                    <input class="form-control " placeholder="Enter your Username " type="text"
                                         id="user_name" name="user_name">
-                                        <span class="user_name_error error"></span>
+                                    <span class="user_name_error error"></span>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Enter your Email" type="email"
                                         id="email" name="email">
-                                        <span class="email_error error"></span>
+                                    <span class="email_error error"></span>
                                 </div>
-                                <div class="form-group">
+                                <div class="input-group mb-3">
                                     <input class="form-control" placeholder="Enter your Password" type="password"
                                         id="password" name="password">
-                                        <span class="password_error error"></span>
+                                    <i class="input-group-text fe fe-eye"></i>
+                                    <span class="password_error error"></span>
                                 </div>
+
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Enter your Mobile Number" type="text"
                                         id="mobile_number" name="mobile_number">
-                                        <span class="mobile_number_error error"></span>
+                                    <span class="mobile_number_error error"></span>
                                 </div>
                                 <button class="btn btn-primary btn-block createBtn">Create Account</button>
                             </form>
                         </div>
                         <div class="main-signup-footer mg-t-10">
-                            <p>Already have an account? <a href="{{route('login')}}">Sign In</a></p>
+                            <p>Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
                         </div>
                     </div>
                 </div>
@@ -101,6 +108,20 @@
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        let eyePass = document.querySelector('.fe-eye');
+        let inputPass = document.querySelector('#password')
+        eyePass.addEventListener('click', function() {
+            if (this.classList.contains('fe-eye')) {
+                this.classList.remove('fe-eye');
+                this.classList.add('fe-eye-off');
+                inputPass.type = 'text'
+            } else {
+                this.classList.add('fe-eye');
+                this.classList.remove('fe-eye-off');
+                inputPass.type = 'password'
+            }
+
+        })
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -119,10 +140,10 @@
                     //     required: true,
                     //     email: true,
                     // },
-                    password: {
-                        required: true,
-                        minlength: 5
-                    },
+                    // password: {
+                    //     required: true,
+                    //     minlength: 5
+                    // },
                 },
                 submitHandler: function() {
                     let data = $("#submitForm").serialize();
@@ -137,21 +158,22 @@
                         success: function(res) {
                             if (res.status === true) {
                                 Swal.fire({
-                                icon: "success",
-                                title: "You are successfully Registered!",
-                            });
-                            setTimeout(() => {
-                                window.location = '{{ route('login') }}'
-                            }, 500);
+                                    icon: "success",
+                                    title: "You are successfully Registered!",
+                                });
+                                setTimeout(() => {
+                                    window.location = '{{ route('login') }}'
+                                }, 500);
 
                             }
                         },
-                        error: function(xhr){
-                            $.each(xhr.responseJSON.errors, function(index, message){
-                                $(`.${index}_error`).text(message[0]).css('color','red');
+                        error: function(xhr) {
+                            $.each(xhr.responseJSON.errors, function(index, message) {
+                                $(`.${index}_error`).text(message[0]).css('color',
+                                    'red');
                             });
                         },
-                        complete:function(){
+                        complete: function() {
                             $('.createBtn').html('Create Account')
                         }
                     });

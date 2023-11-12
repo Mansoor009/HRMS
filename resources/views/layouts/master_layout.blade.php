@@ -374,7 +374,7 @@
                     </a>
                 </li>
                 <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Logout">
-                    <a class="nav-link text-center m-2">
+                    <a class="nav-link text-center m-2" href="{{ route('logut') }}">
                         <i class="fe fe-power"></i>
                     </a>
                 </li>

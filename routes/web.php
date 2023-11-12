@@ -17,3 +17,4 @@ Route::post('/reset_password',[showController::class,'resetPasswordControl'])->n
 Route::post('/delete/{id}',[showController::class,'deleteData'])->name('remove.data');
 Route::get('/edit/{id}',[showController::class,'getData'])->name('edit.data');
 Route::post('/status',[showController::class,'statusChange'])->name('update.status');
+Route::post('/punchStatus',[showController::class,'punchStatus'])->name('punch.status');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Illuminate\Contracts\Session\Session;
@@ -52,7 +53,7 @@ class showController extends Controller
             $request->validate([
                 'user_name' => 'required|unique:users',
                 'email' => 'required|email|unique:users',
-                'password' => 'required|unique:users',
+                'password' => 'required|unique:users|min:5',
                 'mobile_number' => 'required|numeric|digits:10'
             ]);
 
@@ -192,4 +193,11 @@ class showController extends Controller
             return response(['status' => $request->status, 'message' => $request->status == 1 ? 'Activated Succesfully' : 'De-Activated Succesfully']);
         }
     }
+    // public function punchStatus(Request $request){
+    //         $insert = Attendance::create([
+    //             'punch_status' => $request->status
+    //         ]);
+    //         return response(['status' => true, 'punch' => $request->status]);
+        
+    // }
 }
