@@ -37,6 +37,10 @@
         button.btn.punch-btn {
             background: linear-gradient(45deg, rgba(245, 66, 102, 0.9), rgba(56, 88, 249, 0.9));
             color: white;
+            font-size: 20px;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-weight: 600;
         }
 
         .punch-info span {
@@ -63,14 +67,17 @@
             padding: 0 0 0 30px;
         }
 
-        .member-head h2,h3{
+        .member-head h2,
+        h3 {
             color: white;
         }
-        .member-head{
+
+        .member-head {
             margin: 15px 0;
         }
-        .row{
-            margin:15px 0;
+
+        .row {
+            margin: 15px 0;
         }
     </style>
 @endpush
@@ -80,7 +87,7 @@
 
         <div class="member-head">
             <h2>Attendance</h2>
-        <h3>Dashboard / Attendance</h3>
+            <h3>Dashboard / Attendance</h3>
         </div>
         <div class="row">
             <div class="col-lg-1"></div>
@@ -124,48 +131,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Today Activity</h5>
                         <ul class="res-activity-list">
-                            <li>
-                                <p class="mb-0">Punch In at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    10.00 AM.
-                                </p>
-                            </li>
-                            <li>
-                                <p class="mb-0">Punch Out at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    11.00 AM.
-                                </p>
-                            </li>
-                            <li>
-                                <p class="mb-0">Punch In at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    11.15 AM.
-                                </p>
-                            </li>
-                            <li>
-                                <p class="mb-0">Punch Out at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    1.30 PM.
-                                </p>
-                            </li>
-                            <li>
-                                <p class="mb-0">Punch In at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    2.00 PM.
-                                </p>
-                            </li>
-                            <li>
-                                <p class="mb-0">Punch Out at</p>
-                                <p class="res-activity-time">
-                                    <i class="fa-regular fa-clock"></i>
-                                    7.30 PM.
-                                </p>
-                            </li>
+
                         </ul>
                     </div>
                 </div>
@@ -216,31 +182,30 @@
 @endsection
 @push('script')
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
             let punchStatus = 0;
-            $('.punch-btn').click(function(){
-                if(punchStatus == 0){
+            $('.punch-btn').click(function() {
+                if (punchStatus == 0) {
                     punchStatus = 1;
                     $(this).text('Punch Out');
                     console.log(punchStatus);
-                }
-                else{
+                } else {
                     punchStatus = 0;
                     $(this).text('Punch In');
                     console.log(punchStatus);
                 }
                 $.ajax({
-                    url:'{{route('punch.status')}}',
-                    type:'post',
-                    data:{
-                        status:punchStatus
+                    url: '{{ route('punch.status') }}',
+                    type: 'post',
+                    data: {
+                        status: punchStatus
                     },
-                    success:function(res){
+                    success: function(res) {
                         console.log(res)
                     }
                 });

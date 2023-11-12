@@ -30,13 +30,6 @@
     <div class="page">
         <div class="m-3">
 
-            @if ($errors)
-                <div class="col-lg-12">
-                    @foreach ($errors as $error)
-                        <div class="alert alert-danger">{!! $error !!}</div>
-                    @endforeach
-                </div>
-            @endif
         </div>
         <!-- main-signin-wrapper -->
         <div class="my-auto page page-h">
@@ -114,11 +107,11 @@
             if (this.classList.contains('fe-eye')) {
                 this.classList.remove('fe-eye');
                 this.classList.add('fe-eye-off');
-                inputPass.type = 'text'
+                inputPass.type = 'text';
             } else {
                 this.classList.add('fe-eye');
                 this.classList.remove('fe-eye-off');
-                inputPass.type = 'password'
+                inputPass.type = 'password';
             }
 
         })

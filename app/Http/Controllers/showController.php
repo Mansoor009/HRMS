@@ -24,7 +24,8 @@ class showController extends Controller
     public function showMemberData()
     {
         $users = User::all();
-        return view('member.member_dash', ['users' => $users]);
+        $attendance = Attendance::all();
+        return view('member.member_dash', ['users' => $users,'attendance' => $attendance]);
     }
 
     //register view
@@ -38,10 +39,9 @@ class showController extends Controller
     {
         if ($request->user_id) {
             $update = User::find($request->user_id);
-            if(!$update){
+            if (!$update) {
                 abort(404);
-            }
-            else{
+            } else {
                 $update->update([
                     'user_name' => $request->user_name,
                     'email' => $request->email,
@@ -88,17 +88,14 @@ class showController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if($user->status == 0){
+            if ($user->status == 0) {
                 return response(['message' => 'Your Account Is De-Activated', 'status' => 'denied']);
-            }
-            else if ($user->role == 'member' && $user->status == 1) {
+            } else if ($user->role == 'member' && $user->status == 1) {
                 return response(['message' => 'Member Succesfully Logging in', 'status' => 'member']);
-            }
-            else if($user->role == 'admin' && $user->status == 1){
+            } else if ($user->role == 'admin' && $user->status == 1) {
                 return response(['message' => 'Admin Succesfully Logging in', 'status' => 'admin',]);
             }
-        }
-        else {
+        } else {
             return response(['Message' => 'Wrong Credentials', 'status' => false]);
         }
     }
@@ -130,7 +127,7 @@ class showController extends Controller
             'token' => $token
         ]);
 
-        $response  = Mail::send('email.forget_password', ['token' => $token,'email' => $request->email], function ($message) use ($request) {
+        $response  = Mail::send('email.forget_password', ['token' => $token, 'email' => $request->email], function ($message) use ($request) {
             $message->to($request->email);
             $message->subject('Reset Password');
         });
@@ -139,9 +136,9 @@ class showController extends Controller
         // return  redirect()->to(route('forgotPassword'))->with(['success' => 'Email Send']);
     }
 
-    public function resetPasswordView($token,$email)
+    public function resetPasswordView($token, $email)
     {
-        return view('new_password', ['token' => $token,'email' => $email]);
+        return view('new_password', ['token' => $token, 'email' => $email]);
     }
 
     public function resetPasswordControl(Request $request)
@@ -184,20 +181,23 @@ class showController extends Controller
         }
     }
 
-    public function statusChange(Request $request){
+    public function statusChange(Request $request)
+    {
         if (!$request->id) {
-           return response(['status' => false, 'message' => 'Id has not Been Sent']);
-        }
-        else{
-            $status = User::where('id',$request->id)->update(['status' => $request->status]);
+            return response(['status' => false, 'message' => 'Id has not Been Sent']);
+        } else {
+            $status = User::where('id', $request->id)->update(['status' => $request->status]);
             return response(['status' => $request->status, 'message' => $request->status == 1 ? 'Activated Succesfully' : 'De-Activated Succesfully']);
         }
     }
-    // public function punchStatus(Request $request){
-    //         $insert = Attendance::create([
-    //             'punch_status' => $request->status
-    //         ]);
-    //         return response(['status' => true, 'punch' => $request->status]);
-        
-    // }
+    public function punchStatus(Request $request)
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+        $insert = Attendance::create([
+            'user_id' => $userId,   
+            'punch_status' => $request->status
+        ]);
+        return response(['status' => true, 'punch' => $request->status]);
+    }
 }
