@@ -64,11 +64,11 @@
             overflow-y: auto;
             position: relative;
             margin: 0;
-            padding: 0 0 0 30px;
+            padding: 0;
         }
 
         .member-head h2,
-        h3 {
+        h5 {
             color: white;
         }
 
@@ -79,15 +79,25 @@
         .row {
             margin: 15px 0;
         }
+
+        .res-activity-list li {
+            background-color: #4855eb;
+            color: white;
+            padding: 8px 10px;
+            font-weight: 500;
+            margin: 12px 0;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            border-radius: 10px;
+        }
     </style>
 @endpush
 @section('section')
-    
+
     <div class="content container-fluid">
 
         <div class="member-head">
             <h2>Attendance</h2>
-            <h3>Dashboard / Attendance</h3>
+            <h5>Dashboard / Attendance</h5>
         </div>
         <div class="row">
             <div class="col-lg-1"></div>
@@ -107,22 +117,7 @@
                         <div class="punch-btn-section">
                             <button type="button" class="btn punch-btn">Punch In</button>
                         </div>
-                        <div class="statistics">
-                            <div class="row">
-                                <div class="col-md-6 col-6 text-center">
-                                    <div class="stats-box">
-                                        <p>Break</p>
-                                        <h6>1.21 hrs</h6>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-6 text-center">
-                                    <div class="stats-box">
-                                        <p>Overtime</p>
-                                        <h6>3 hrs</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                     
                     </div>
                 </div>
             </div>
@@ -183,6 +178,7 @@
 @push('script')
     <script>
         $(document).ready(function() {
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -190,14 +186,13 @@
             });
             let punchStatus = 0;
             $('.punch-btn').click(function() {
+                let htmlLi = '';
                 if (punchStatus == 0) {
                     punchStatus = 1;
                     $(this).text('Punch Out');
-                    console.log(punchStatus);
                 } else {
                     punchStatus = 0;
                     $(this).text('Punch In');
-                    console.log(punchStatus);
                 }
                 $.ajax({
                     url: '{{ route('punch.status') }}',
@@ -206,10 +201,38 @@
                         status: punchStatus
                     },
                     success: function(res) {
-                        console.log(res)
+
+                        if (res['status'] == false) {
+                            console.log(res)
+                            Swal.fire({
+                                icon: "warning",
+                                title: 'Already Punched In',
+                            });
+
+                        }
+                        else if (res['punch'] == 1 && res['status'] == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: 'Punched In Succesfully',
+                            });
+                        } else if (res['punch'] == 0 && res['status'] == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: 'Punched Out Succesfully',
+                            });
+                        }
+                        res['attendance'].forEach((val) => {
+                            if (val['punch_status'] == 1) {
+                                htmlLi += `<li>Punch In At ${val['created_at']}`
+                            } else {
+                                htmlLi += `<li>Punch Out At ${val['created_at']}`
+                            }
+                            $('.res-activity-list').html(htmlLi);
+                        });
                     }
                 });
-            })
-        })
+            });
+        });
+
     </script>
 @endpush
