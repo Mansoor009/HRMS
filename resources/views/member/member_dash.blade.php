@@ -104,7 +104,7 @@
             <div class="col-lg-5">
                 <div class="card punch-status">
                     <div class="card-body">
-                        <h5 class="card-title">Timesheet <small class="text-muted">11 Mar 2019</small></h5>
+                        <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y') ?></small></h5>
                         <div class="punch-det">
                             <h6>Punch In at</h6>
                             <p>Wed, 11th Mar 2019 10.00 AM</p>
@@ -117,7 +117,7 @@
                         <div class="punch-btn-section">
                             <button type="button" class="btn punch-btn">Punch In</button>
                         </div>
-                     
+
                     </div>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                         status: punchStatus
                     },
                     success: function(res) {
-
+                        console.log(res)
                         if (res['status'] == false) {
                             console.log(res)
                             Swal.fire({
@@ -222,12 +222,13 @@
                             });
                         }
                         res['attendance'].forEach((val) => {
-                            if (val['punch_status'] == 1) {
-                                htmlLi += `<li>Punch In At ${val['created_at']}`
+                            if (val.punch_status == 1) {
+                                htmlLi += `<li>Punch In At ${val.created_at}`
                             } else {
-                                htmlLi += `<li>Punch Out At ${val['created_at']}`
+                                htmlLi += `<li>Punch Out At ${val.created_at}`
                             }
                             $('.res-activity-list').html(htmlLi);
+                            console.log(val)
                         });
                     }
                 });

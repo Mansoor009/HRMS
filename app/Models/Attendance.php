@@ -9,8 +9,9 @@ class Attendance extends Model
 {
     protected $table = 'attendances';
 
-    protected $fillable = [
-       'punch_status',
-       'user_id',
+    protected $guarded = [];
+
+    protected $casts = [
+        'created_at' => 'datetime: d M, Y h:i A',
     ];
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\ResetPassword;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class showController extends Controller
 {
@@ -194,22 +195,23 @@ class showController extends Controller
     }
     public function punchStatus(Request $request)
     {
-
-        $currentTime = Carbon::now();
         $userId = Auth::id();
 
         $fields = [
             'user_id' => $userId,
             'punch_status' => $request->status
         ];
-        $lastId = Attendance::where('user_id',$userId)->where('created_at',$currentTime)->orderBy('id', 'DESC')->pluck('punch_status')->first();
+        $lastId = Attendance::where('user_id', $userId)->orderBy('id', 'DESC')->pluck('punch_status')->first();
+        // dd(Attendance::where('user_id',$userId)->where('created_at',$today)->first());
         if($lastId == $fields['punch_status']){
             return response(['status' => false,'message' => 'Already Punched In']);
         }
         else{
-            $attendance = Attendance::create($fields);
-            $attendance = Attendance::where('user_id',$userId)->get(['punch_status','created_at']);
-            return response(['status' => true, 'punch' => $request->status,'attendance' => $attendance]);
+            Attendance::create($fields);
+            $result = Attendance::where('user_id', $userId)->orderBy('id','desc')->get();
+
+            // $attendance = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId' ");
+            return response(['status' => true, 'punch' => $request->status,'attendance' => $result]);
         }
 
     }
