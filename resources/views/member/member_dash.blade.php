@@ -222,6 +222,8 @@
                             });
                         }
                         res['attendance'].forEach((val) => {
+                            console.log('val.created_at')
+                            console.log(val.created_at)
                             if (val.punch_status == 1) {
                                 htmlLi += `<li>Punch In At ${val.created_at}`
                             } else {

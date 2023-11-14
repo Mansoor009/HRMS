@@ -209,7 +209,6 @@ class showController extends Controller
         else{
             Attendance::create($fields);
             $result = Attendance::where('user_id', $userId)->orderBy('id','desc')->get();
-
             // $attendance = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId' ");
             return response(['status' => true, 'punch' => $request->status,'attendance' => $result]);
         }
