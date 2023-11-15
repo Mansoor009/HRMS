@@ -27,8 +27,10 @@ class showController extends Controller
     {
         $users = User::all();
         $userId = Auth::id();
-        $attendance = Attendance::where('id',$userId)->get();
-        return view('member.member_dash', ['users' => $users,'attendance' => $attendance]);
+        $attendance  = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId'");
+        $punch = DB::table("attendances")->select(['punch_status'])->where('user_id',$userId)->orderBy('id','desc')->first();
+
+        return view('member.member_dash', ['users' => $users,'attendance' => $attendance,'punch' => $punch]);
     }
 
     //register view
@@ -199,7 +201,8 @@ class showController extends Controller
 
         $fields = [
             'user_id' => $userId,
-            'punch_status' => $request->status
+            'punch_status' => $request->status,
+            'created_at' => now()
         ];
         $lastId = Attendance::where('user_id', $userId)->orderBy('id', 'DESC')->pluck('punch_status')->first();
         // dd(Attendance::where('user_id',$userId)->where('created_at',$today)->first());
@@ -208,9 +211,9 @@ class showController extends Controller
         }
         else{
             Attendance::create($fields);
-            $result = Attendance::where('user_id', $userId)->orderBy('id','desc')->get();
-            dd($result);
-            // $attendance = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId' ");
+            $result = Attendance::where('user_id', $userId)->get();
+            // dd(Carbon::now()->format('Y-m-d H:i:s.u'));
+
             return response(['status' => true, 'punch' => $request->status,'attendance' => $result]);
         }
 
