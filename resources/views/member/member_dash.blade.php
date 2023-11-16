@@ -64,7 +64,36 @@
             overflow-y: auto;
             position: relative;
             margin: 0;
-            padding: 0;
+            padding: 0 0 0 30px;
+        }
+
+        .recent-activity .res-activity-list li:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border: 2px solid #c23b82;
+            z-index: 2;
+            background: #ffffff;
+            border-radius: 100%;
+            margin: 0 0 0 15px;
+            position: absolute;
+            top: 0;
+            left: -45px;
+        }
+
+        .recent-activity .res-activity-list li {
+            margin: 0 0 15px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .recent-activity .res-activity-list:after {
+            content: "";
+            border: 1px solid #e5e5e5;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 4px;
         }
 
         .member-head h2,
@@ -80,170 +109,162 @@
             margin: 15px 0;
         }
 
-        .res-activity-list li {
-            padding: 8px 10px;
-            font-weight: 500;
-            margin: 12px 0;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-            border-radius: 10px;
-        }
+        /* .res-activity-list li {
+                padding: 8px 10px;
+                font-weight: 500;
+                margin: 12px 0;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                border-radius: 10px;
+            } */
     </style>
-@section('section')
+    @section('section')
 
-    <div class="content container-fluid">
+        <div class="content container-fluid">
 
-        <div class="member-head">
-            <h2>Attendance</h2>
-            <h5>Dashboard / Attendance</h5>
-        </div>
-        <div class="row">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-5">
-                <div class="card punch-status">
-                    <div class="card-body">
-                        <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y'); ?></small></h5>
-                        <div class="punch-det">
-                            <h6>Punch In at</h6>
-                            <p>Wed, 11th Mar 2019 10.00 AM</p>
-                        </div>
-                        <div class="punch-info">
-                            <div class="punch-hours">
-                                <span>3.45 hrs</span>
+            <div class="member-head">
+                <h2>Attendance</h2>
+                <h5>Dashboard / Attendance</h5>
+            </div>
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-5">
+                    <div class="card punch-status">
+                        <div class="card-body">
+                            <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y'); ?></small></h5>
+                            <div class="punch-det">
+                                <h6>Punch In at</h6>
+                                <p>Wed, 11th Mar 2019 10.00 AM</p>
                             </div>
-                        </div>
-                        <div class="punch-btn-section">
-                            <button type="button" class="btn punch-btn">
-                                @switch($punch->punch_status)
-                                    @case(1)
-                                        Punch Out
-                                        @break
-                                    @case(0)
-                                        Punch In
-                                        @break
-                                    @default
-                                        Punch In
-                                @endswitch
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="card recent-activity">
-                    <div class="card-body">
-                        <h5 class="card-title">Today Activity</h5>
-                        <ul class="res-activity-list">
-                            @foreach ($attendance as $val)
-                                @if ($val->punch_status == 1)
-                                    <li class = 'bg-success'>Punch In at {{ $val->created_at }}</li>
+                            <div class="punch-info">
+                                <div class="punch-hours">
+                                    <span>3.45 hrs</span>
+                                </div>
+                            </div>
+                            <div class="punch-btn-section">
+                                @if (!isset($punch))
+                                    <button data-action="1" type="button" class="btn punch-btn">Punch In</button>
                                 @else
-                                    <li class ='bg-danger'>Punch Out at {{ $val->created_at }}</li>
+                                    <button data-action="{{ $punch ? 0 : 1 }}" type="button" class="btn punch-btn">Punch
+                                        {{ $punch ? 'Out' : 'In' }}</button>
                                 @endif
-                            @endforeach
-                        </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card recent-activity">
+                        <div class="card-body">
+                            <h5 class="card-title">Today Activity</h5>
+                            <ul class="res-activity-list">
+                                @foreach ($attendance as $val)
+                                    @if ($val->punch_status == 1)
+                                        <li>Punch In at <br>{{ $val->created_at }}</li>
+                                    @else
+                                        <li>Punch Out at <br>{{ $val->created_at }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped custom-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date </th>
+                                    <th>Punch In</th>
+                                    <th>Punch Out</th>
+                                    <th>Production</th>
+                                    <th>Break</th>
+                                    <th>Overtime</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>19 Feb 2019</td>
+                                    <td>10 AM</td>
+                                    <td>7 PM</td>
+                                    <td>9 hrs</td>
+                                    <td>1 hrs</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>20 Feb 2019</td>
+                                    <td>10 AM</td>
+                                    <td>7 PM</td>
+                                    <td>9 hrs</td>
+                                    <td>1 hrs</td>
+                                    <td>0</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-1"></div>
         </div>
+    @endsection
+    @push('script')
+        <script>
+            $(document).ready(function() {
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="table-responsive">
-                    <table class="table table-striped custom-table mb-0">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date </th>
-                                <th>Punch In</th>
-                                <th>Punch Out</th>
-                                <th>Production</th>
-                                <th>Break</th>
-                                <th>Overtime</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>19 Feb 2019</td>
-                                <td>10 AM</td>
-                                <td>7 PM</td>
-                                <td>9 hrs</td>
-                                <td>1 hrs</td>
-                                <td>0</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>20 Feb 2019</td>
-                                <td>10 AM</td>
-                                <td>7 PM</td>
-                                <td>9 hrs</td>
-                                <td>1 hrs</td>
-                                <td>0</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
-@push('script')
-    <script>
-        $(document).ready(function() {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            let punchStatus = 0;
-            let lastPunch = '{!! $punch->punch_status !!}'
-
-            $('.punch-btn').click(function() {
-                console.log(lastPunch);
-                let htmlLi = '';
-                if (punchStatus == 0) {
-                    punchStatus = 1;
-                    $(this).text('Punch Out');
-                } else {
-                    punchStatus = 0;
-                    $(this).text('Punch In');
-                }
-                $.ajax({
-                    url: '{{ route('punch.status') }}',
-                    type: 'post',
-                    data: {
-                        status: punchStatus
-                    },
-                    success: function(res) {
-                        console.log(res)
-                         if (res['punch'] == 1 && res['status'] == true) {
-                            Swal.fire({
-                                icon: "success",
-                                title: 'Punched In Succesfully',
-                            });
-                        } else if (res['punch'] == 0 && res['status'] == true) {
-                            Swal.fire({
-                                icon: "success",
-                                title: 'Punched Out Succesfully',
-                            });
-                        }
-                        // res['attendance'].forEach((val) => {
-                        //     console.log('val.created_at')
-                        //     console.log(val.created_at)
-                        //     if (val.punch_status == 1) {
-                        //         htmlLi += `<li class = 'bg-success'>Punch In At ${val.created_at}`
-                        //     } else {
-                        //         htmlLi += `<li class = 'bg-danger'>Punch Out At ${val.created_at}`
-                        //     }
-                        //     $('.res-activity-list').html(htmlLi);
-                        //     console.log(val)
-                        // });
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+                $('.punch-btn').click(function() {
+                    let htmlLi = '';
+                    let element = $(this);
+                    let action = element.attr('data-action');
+                    $.ajax({
+                        url: '{{ route('punch.status') }}',
+                        type: 'post',
+                        data: {
+                            status: action
+                        },
+                        success: function(res) {
+                            console.log(res)
+                            if (res['punch'] == 1 && res['status'] == true) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: 'Punched In Succesfully',
+                                });
+                            } else if (res['punch'] == 0 && res['status'] == true) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: 'Punched Out Succesfully',
+                                });
+                            }
+                            res['attendance'].forEach((val) => {
+                                if (val.punch_status == 1) {
+                                    htmlLi +=
+                                        `<li>Punch In At <br> ${val.created_at}`
+                                } else {
+                                    htmlLi +=
+                                        `<li>Punch Out At <br> ${val.created_at}`
+                                }
+                                $('.res-activity-list').html(htmlLi);
+                            });
+
+                            if (res['punch'] == 1) {
+                                $('.punch-btn').text('Punch Out');
+                                element.attr('data-action', 0);
+                            } else {
+                                $('.punch-btn').text('Punch In');
+                                element.attr('data-action', 1);
+                            }
+                        }
+                    });
+                });
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
