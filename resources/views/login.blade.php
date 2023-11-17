@@ -148,6 +148,7 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Admin logged in successfully",
+                                showCloseButton: false,
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('admin.dashboard') }}';
@@ -158,6 +159,7 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Member logged in successfully",
+                                showCloseButton: false,
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('member.dashboard') }}';

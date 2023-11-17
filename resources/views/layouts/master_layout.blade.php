@@ -9,13 +9,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/notify/css/notifIt.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.css') }}">
     <title>Laravel - @yield('title', 'website')</title>
-    @stack('style')
-</head>
-<style>
 
-</style>
+</head>
+@stack('style')
 
 <body class="main-body app sidebar-mini ltr">
     <!-- Loader -->
@@ -446,9 +445,13 @@
     <script src="{{ asset('assets/js/themecolor.js') }}"></script>
     <script src="{{ asset('assets/js/swither-styles.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script src="{{ asset('assets/plugins/notify/js/notifIt.js') }}"></script>
+    <script src="{{ asset('assets/plugins/notify/js/notifit-custom.js') }}"></script>
+    <script src="{{ asset('assets/plugins/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/moment/min/locales.min.js') }}"></script>
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
+
     @stack('script')
 </body>
 

@@ -28,9 +28,20 @@ class showController extends Controller
         $users = User::all();
         $userId = Auth::id();
         $attendance  = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId'");
-        $punch = Attendance::select('punch_status')->where('user_id',$userId)->orderBy('id','DESC')->pluck('punch_status')->first();
+        $punch = Attendance::select('punch_status')
+            ->where('user_id', $userId)
+            ->orderBy('id', 'DESC')
+            ->pluck('punch_status')
+            ->first();
+        $lastPunchOut = DB::table('attendances')
+            ->select('created_at')
+            ->where('user_id', $userId)
+            ->where('punch_status', 0)
+            ->orderBy('id','DESC')
+            ->pluck('created_at')
+            ->first();
         // return ['']
-        return view('member.member_dash', ['users' => $users,'attendance' => $attendance,'punch' => $punch]);
+        return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch,'lastPunchOut' => $lastPunchOut]);
     }
 
     //register view
@@ -206,16 +217,18 @@ class showController extends Controller
         ];
         $lastId = Attendance::where('user_id', $userId)->orderBy('id', 'DESC')->pluck('punch_status')->first();
         // dd(Attendance::where('user_id',$userId)->where('created_at',$today)->first());
-        if($lastId == $fields['punch_status']){
-            return response(['status' => false,'message' => 'Already Punched In']);
-        }
-        else{
+        if ($lastId == $fields['punch_status']) {
+            return response(['status' => false, 'message' => 'Already Punched In']);
+        } else {
             Attendance::create($fields);
             $result  = DB::select("SELECT * FROM attendances WHERE user_id = '$userId'");
             // dd(Carbon::now()->format('Y-m-d H:i:s.u'));
-            $punch = Attendance::select('punch_status')->where('user_id',$userId)->orderBy('id','DESC')->pluck('punch_status')->first();
-            return response(['status' => true, 'punch' => $request->status,'attendance' => $result,'punch' => $punch]);
+            $punch = Attendance::select('punch_status')
+            ->where('user_id', $userId)
+            ->orderBy('id', 'DESC')
+            ->pluck('punch_status')
+            ->first();
+            return response(['status' => true, 'punch' => $request->status, 'attendance' => $result, 'punch' => $punch]);
         }
-
     }
 }
