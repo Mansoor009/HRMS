@@ -1,7 +1,6 @@
 @extends('layouts.master_layout')
 @section('title','Admin Dashboard')
 @section('section')
-    <a href="{{ route('logut') }}" class="btn btn-danger">Log Out</a>
     <table class="table table-striped table-bordered table-responsive">
         <thead>
             <tr>

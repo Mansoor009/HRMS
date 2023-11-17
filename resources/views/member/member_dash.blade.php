@@ -45,6 +45,7 @@
 
         .punch-info span {
             color: blue;
+            font-weight: 500;
         }
 
         .punch-btn-section {
@@ -64,7 +65,36 @@
             overflow-y: auto;
             position: relative;
             margin: 0;
-            padding: 0;
+            padding: 0 0 0 30px;
+        }
+
+        .recent-activity .res-activity-list li:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border: 2px solid #c23b82;
+            z-index: 2;
+            background: #ffffff;
+            border-radius: 100%;
+            margin: 0 0 0 15px;
+            position: absolute;
+            top: 0;
+            left: -45px;
+        }
+
+        .recent-activity .res-activity-list li {
+            margin: 0 0 15px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .recent-activity .res-activity-list:after {
+            content: "";
+            border: 1px solid #e5e5e5;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 4px;
         }
 
         .member-head h2,
@@ -78,16 +108,6 @@
 
         .row {
             margin: 15px 0;
-        }
-
-        .res-activity-list li {
-            background-color: #4855eb;
-            color: white;
-            padding: 8px 10px;
-            font-weight: 500;
-            margin: 12px 0;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-            border-radius: 10px;
         }
     </style>
 @endpush
@@ -104,18 +124,30 @@
             <div class="col-lg-5">
                 <div class="card punch-status">
                     <div class="card-body">
-                        <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y') ?></small></h5>
+                        <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y'); ?></small></h5>
                         <div class="punch-det">
-                            <h6>Punch In at</h6>
-                            <p>Wed, 11th Mar 2019 10.00 AM</p>
+                            <h6>First Punch In at</h6>
+                            <p>
+                                <?php
+                                $timestamp = strtotime($attendance[0]->created_at);
+                                print date('d M Y h:i:a', $timestamp);
+                                ?>
+                            </p>
                         </div>
                         <div class="punch-info">
                             <div class="punch-hours">
-                                <span>3.45 hrs</span>
+                                <span class="punchDiff">
+                                    00:00:00
+                                </span>
                             </div>
                         </div>
                         <div class="punch-btn-section">
-                            <button type="button" class="btn punch-btn">Punch In</button>
+                            @if (!isset($punch))
+                                <button data-action="1" type="button" class="btn punch-btn">Punch In</button>
+                            @else
+                                <button data-action="{{ $punch ? 0 : 1 }}" type="button" class="btn punch-btn">Punch
+                                    {{ $punch ? 'Out' : 'In' }}</button>
+                            @endif
                         </div>
 
                     </div>
@@ -126,7 +158,13 @@
                     <div class="card-body">
                         <h5 class="card-title">Today Activity</h5>
                         <ul class="res-activity-list">
-
+                            @foreach ($attendance as $val)
+                                @if ($val->punch_status == 1)
+                                    <li>Punch In at <br>{{ $val->created_at }}</li>
+                                @else
+                                    <li>Punch Out at <br>{{ $val->created_at }}</li>
+                                @endif
+                            @endforeach
                         </ul>
                     </div>
                 </div>
@@ -145,8 +183,6 @@
                                 <th>Punch In</th>
                                 <th>Punch Out</th>
                                 <th>Production</th>
-                                <th>Break</th>
-                                <th>Overtime</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,17 +192,6 @@
                                 <td>10 AM</td>
                                 <td>7 PM</td>
                                 <td>9 hrs</td>
-                                <td>1 hrs</td>
-                                <td>0</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>20 Feb 2019</td>
-                                <td>10 AM</td>
-                                <td>7 PM</td>
-                                <td>9 hrs</td>
-                                <td>1 hrs</td>
-                                <td>0</td>
                             </tr>
                         </tbody>
                     </table>
@@ -174,6 +199,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @push('script')
     <script>
@@ -184,58 +210,126 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            let punchStatus = 0;
+            var totalElapsedTime = 0;
+            var previousTime
             $('.punch-btn').click(function() {
                 let htmlLi = '';
-                if (punchStatus == 0) {
-                    punchStatus = 1;
-                    $(this).text('Punch Out');
-                } else {
-                    punchStatus = 0;
-                    $(this).text('Punch In');
-                }
+                let element = $(this);
+                let action = element.attr('data-action');
+                r
+                // let startT = moment('');
+                // let endT = moment('{{ $lastPunchOut }}');
+                // let duration = moment.duration(endT.diff(startT));
+                // $('.punchDiff').html(
+                //     `${duration.hours()}:${duration.minutes()}:${duration.seconds()} hrs`
+                // );
                 $.ajax({
                     url: '{{ route('punch.status') }}',
                     type: 'post',
                     data: {
-                        status: punchStatus
+                        status: action
                     },
                     success: function(res) {
                         console.log(res)
-                        if (res['status'] == false) {
-                            console.log(res)
-                            Swal.fire({
-                                icon: "warning",
-                                title: 'Already Punched In',
-                            });
-
-                        }
-                        else if (res['punch'] == 1 && res['status'] == true) {
-                            Swal.fire({
-                                icon: "success",
-                                title: 'Punched In Succesfully',
+                        if (res['punch'] == 1 && res['status'] == true) {
+                            notif({
+                                msg: 'Punched In Succesfully!',
+                                type: 'success',
+                                fontSize: '23px',
                             });
                         } else if (res['punch'] == 0 && res['status'] == true) {
-                            Swal.fire({
-                                icon: "success",
-                                title: 'Punched Out Succesfully',
+                            notif({
+                                type: 'success',
+                                msg: 'Punched Out Succesfully!',
+                                fontSize: '23px',
+
                             });
                         }
                         res['attendance'].forEach((val) => {
-                            console.log('val.created_at')
-                            console.log(val.created_at)
                             if (val.punch_status == 1) {
-                                htmlLi += `<li>Punch In At ${val.created_at}`
+                                htmlLi +=
+                                    `<li>Punch In At <br> ${val.created_at}`
                             } else {
-                                htmlLi += `<li>Punch Out At ${val.created_at}`
+                                htmlLi +=
+                                    `<li>Punch Out At <br> ${val.created_at}`
                             }
                             $('.res-activity-list').html(htmlLi);
-                            console.log(val)
                         });
+
+                        if (res['punch'] == 1) {
+                            $('.punch-btn').text('Punch Out');
+                            element.attr('data-action', 0);
+                        } else {
+                            $('.punch-btn').text('Punch In');
+                            element.attr('data-action', 1);
+                        }
+
                     }
                 });
             });
         });
-
     </script>
+
+
+    <!-- Display live timer and punch-in/punch-out button -->
+    <div>
+        <div id="liveTimer"></div>
+        <button onclick="togglePunch()">Punch In/Out</button>
+    </div>
+
+    {{-- <script>
+    var isPunchedIn = false;
+    var totalElapsedTime = 0;
+    var previousTime;
+
+    // Function to update the live timer
+    function updateLiveTimer() {
+        var liveTimerElement = document.getElementById('liveTimer');
+
+        if (isPunchedIn) {
+            var currentTime = moment();
+
+            // Calculate the time difference since the previous update
+            var elapsedTime = moment.duration(currentTime.diff(previousTime || currentTime));
+            totalElapsedTime += elapsedTime.asMilliseconds();
+
+            // Format the total elapsed time as desired
+            var formattedTime = moment.utc(totalElapsedTime).format('HH:mm:ss');
+
+            // Update the content of the live timer element
+            liveTimerElement.innerText = "Total Elapsed Time: " + formattedTime;
+
+            // Store the current time as the previous time for the next update
+            previousTime = currentTime;
+        } else {
+            liveTimerElement.innerText = "Not Punched In";
+        }
+    }
+
+    // Function to toggle punch-in/punch-out status
+    function togglePunch() {
+        var currentTime = moment();
+
+        if (isPunchedIn) {
+            // If punched in, punch out
+            isPunchedIn = false;
+        } else {
+            // If not punched in, punch in
+            isPunchedIn = true;
+            previousTime = currentTime;
+        }
+    }
+
+    // Update the live timer every second (1000 milliseconds) if punched in
+    setInterval(function() {
+        if (isPunchedIn) {
+            updateLiveTimer();
+        }
+    }, 1000);
+
+    // Initialize the live timer when the page loads
+    window.onload = function() {
+        updateLiveTimer();
+    };
+</script> --}}
 @endpush
