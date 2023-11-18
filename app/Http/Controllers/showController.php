@@ -37,11 +37,11 @@ class showController extends Controller
             ->select('created_at')
             ->where('user_id', $userId)
             ->where('punch_status', 0)
-            ->orderBy('id','DESC')
+            ->orderBy('id', 'DESC')
             ->pluck('created_at')
             ->first();
         // return ['']
-        return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch,'lastPunchOut' => $lastPunchOut]);
+        return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut]);
     }
 
     //register view
@@ -214,15 +214,18 @@ class showController extends Controller
             'punch_status' => $request->status,
             'created_at' => now()
         ];
-        $lastId = Attendance::where('user_id', $userId)->orderBy('id', 'DESC')->pluck('punch_status')->first();
-        // dd(Attendance::where('user_id',$userId)->where('created_at',$today)->first());
+        $lastId = Attendance::where('user_id', $userId)
+            ->orderBy('id', 'DESC')
+            ->pluck('punch_status')
+            ->first();
         if ($lastId == $fields['punch_status']) {
             return response(['status' => false, 'message' => 'Already Punched In']);
         } else {
             Attendance::create($fields);
-            $result = Attendance::where('user_id', $userId)->orderBy('id','desc')->get();
-            // $attendance = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId' ");
-            return response(['status' => true, 'punch' => $request->status,'attendance' => $result]);
+            $result = DB::table('attendances')
+                ->where('user_id', $userId)
+                ->get();
+            return response(['status' => true, 'punch' => $request->status, 'attendance' => $result]);
         }
     }
 }

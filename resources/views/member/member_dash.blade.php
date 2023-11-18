@@ -129,8 +129,12 @@
                             <h6>First Punch In at</h6>
                             <p>
                                 <?php
-                                $timestamp = strtotime($attendance[0]->created_at);
-                                print date('d M Y h:i:a', $timestamp);
+                                if (isset($attendance) && date('d m y', strtotime($attendance[0]->created_at)) == date('d m y')) {
+                                    $timestamp = strtotime($attendance[0]->created_at);
+                                    print date('d M Y h:i:a', $timestamp);
+                                } else {
+                                    echo 'Not Checked Today';
+                                }
                                 ?>
                             </p>
                         </div>
@@ -216,7 +220,6 @@
                 let htmlLi = '';
                 let element = $(this);
                 let action = element.attr('data-action');
-                r
                 // let startT = moment('');
                 // let endT = moment('{{ $lastPunchOut }}');
                 // let duration = moment.duration(endT.diff(startT));
@@ -232,18 +235,50 @@
                     success: function(res) {
                         console.log(res)
                         if (res['punch'] == 1 && res['status'] == true) {
-                            notif({
-                                msg: 'Punched In Succesfully!',
-                                type: 'success',
-                                fontSize: '23px',
+                            // notif({
+                            //     msg: 'Punched In Succesfully!',
+                            //     type: 'success',
+                            //     fontSize: '23px',
+                            // });
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
                             });
-                        } else if (res['punch'] == 0 && res['status'] == true) {
-                            notif({
-                                type: 'success',
-                                msg: 'Punched Out Succesfully!',
-                                fontSize: '23px',
+                            Toast.fire({
+                                icon: "success",
+                                title: "Punched In Successfully"
+                            });
 
+                        } else if (res['punch'] == 0 && res['status'] == true) {
+                            // notif({
+                            //     type: 'success',
+                            //     msg: 'Punched Out Succesfully!',
+                            //     fontSize: '23px',
+
+                            // });
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
                             });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Punched Out Successfully"
+                            });
+
                         }
                         res['attendance'].forEach((val) => {
                             if (val.punch_status == 1) {
