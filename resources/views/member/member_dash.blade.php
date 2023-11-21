@@ -129,9 +129,8 @@
                             <h6>First Punch In at</h6>
                             <p>
                                 <?php
-                                if (isset($attendance) && date('d m y', strtotime($attendance[0]->created_at)) == date('d m y')) {
-                                    $timestamp = strtotime($attendance[0]->created_at);
-                                    print date('d M Y h:i:a', $timestamp);
+                                if (isset($firstPunchIn)) {
+                                    echo $firstPunchIn;
                                 } else {
                                     echo 'Not Checked Today';
                                 }
