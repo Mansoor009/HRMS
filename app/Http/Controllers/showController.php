@@ -37,7 +37,6 @@ class showController extends Controller
             ->first();
         $lastPunchOut = DB::table('attendances')
             ->select('created_at')
-            ->where('created_at','>=',$currentDate)
             ->where('user_id', $userId)
             ->where('punch_status', 0)  
             ->orderBy('id', 'DESC')
@@ -46,9 +45,9 @@ class showController extends Controller
         $firstPunchIn = DB::table('attendances')
             ->select('created_at')
             ->where('punch_status', 1)
-            ->where('created_at','>=',$currentDate)
+            ->where('created_at','<=',$currentDate)
             ->where('user_id', $userId)
-            ->orderBy('id', 'DESC')
+            ->orderBy('id')
             ->pluck('created_at')
             ->first();
             // dd($firstPunchIn);
