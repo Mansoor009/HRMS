@@ -27,7 +27,6 @@ class showController extends Controller
     {
         $users = User::all();
         $userId = Auth::id();
-        $currentDate = date('Y m d');
         // dd($currentDate);
         $attendance  = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId'");
         $punch = Attendance::select('punch_status')
@@ -38,18 +37,17 @@ class showController extends Controller
         $lastPunchOut = DB::table('attendances')
             ->select('created_at')
             ->where('user_id', $userId)
-            ->where('punch_status', 0)  
+            ->where('punch_status', 0)
             ->orderBy('id', 'DESC')
             ->pluck('created_at')
             ->first();
         $firstPunchIn = DB::table('attendances')
             ->select('created_at')
             ->where('punch_status', 1)
-            ->where('created_at','<=',$currentDate)
+            ->whereDate('created_at','=', now()->toDateString())
             ->where('user_id', $userId)
-            ->orderBy('id')
-            ->pluck('created_at')
-            ->first();
+            ->orderBy('id','asc')
+            ->value('created_at');
             // dd($firstPunchIn);
         // return ['']
         return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut,'firstPunchIn' => $firstPunchIn]);
