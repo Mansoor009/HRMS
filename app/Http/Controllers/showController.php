@@ -21,36 +21,46 @@ class showController extends Controller
     public function showAdminData()
     {
         $users = User::all();
-        return view('admin.dashboard', ['users' => $users]);
+        $userId = Auth::id();
+        if (!$userId) {
+            abort(404, 'User Id Not Found!');
+        } else {
+            return view('admin.dashboard', ['users' => $users]);
+        }
     }
     public function showMemberData()
     {
         $users = User::all();
         $userId = Auth::id();
+        if (!$userId) {
+            abort(404, 'User Id Not Found!');
+        }
         // dd($currentDate);
-        $attendance  = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId'");
-        $punch = Attendance::select('punch_status')
-            ->where('user_id', $userId)
-            ->orderBy('id', 'DESC')
-            ->pluck('punch_status')
-            ->first();
-        $lastPunchOut = DB::table('attendances')
-            ->select('created_at')
-            ->where('user_id', $userId)
-            ->where('punch_status', 0)
-            ->orderBy('id', 'DESC')
-            ->pluck('created_at')
-            ->first();
-        $firstPunchIn = DB::table('attendances')
-            ->select('created_at')
-            ->where('punch_status', 1)
-            ->whereDate('created_at','=', now()->toDateString())
-            ->where('user_id', $userId)
-            ->orderBy('id','asc')
-            ->value('created_at');
+        else {
+            $attendance  = DB::select("SELECT punch_status,created_at FROM attendances WHERE user_id = '$userId'");
+            $punch = Attendance::select('punch_status')
+                ->where('user_id', $userId)
+                ->orderBy('id', 'DESC')
+                ->pluck('punch_status')
+                ->first();
+            $lastPunchOut = DB::table('attendances')
+                ->select('created_at')
+                ->where('user_id', $userId)
+                ->where('punch_status', 0)
+                ->orderBy('id', 'DESC')
+                ->pluck('created_at')
+                ->first();
+            $firstPunchIn = DB::table('attendances')
+                ->select('created_at')
+                ->where('punch_status', 1)
+                ->whereDate('created_at', now()->toDateString())
+                ->where('user_id', $userId)
+                ->orderBy('id', 'asc')
+                ->value('created_at');
             // dd($firstPunchIn);
-        // return ['']
-        return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut,'firstPunchIn' => $firstPunchIn]);
+            // return ['']
+            return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn]);
+        }
     }
 
     //register view
