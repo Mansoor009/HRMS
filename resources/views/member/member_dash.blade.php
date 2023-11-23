@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 @extends('layouts.master_layout')
 @section('title', 'Member Dashboard')
 @push('style')
@@ -126,11 +129,12 @@
                     <div class="card-body">
                         <h5 class="card-title">Timesheet <small class="text-muted"><?php echo date('d M Y'); ?></small></h5>
                         <div class="punch-det">
-                            <h6>First Punch In at</h6>
+                            <h6>First Punch In Today at</h6>
                             <p>
                                 <?php
                                 if (isset($firstPunchIn)) {
-                                    echo $firstPunchIn;
+                                    $date = new DateTime($firstPunchIn);
+                                    echo $date->format('D h:i:s A');
                                 } else {
                                     echo 'Not Checked Today';
                                 }
@@ -139,9 +143,7 @@
                         </div>
                         <div class="punch-info">
                             <div class="punch-hours">
-                                <span class="punchDiff">
-                                    00:00:00
-                                </span>
+                                <div id="timer"><span id="timerValue">0:00:00</span></div>
                             </div>
                         </div>
                         <div class="punch-btn-section">
@@ -163,9 +165,9 @@
                         <ul class="res-activity-list">
                             @foreach ($attendance as $val)
                                 @if ($val->punch_status == 1)
-                                    <li>Punch In at <br>{{ $val->created_at }}</li>
+                                    <li>Punch In at <br>{{ Carbon::parse($val->created_at)->format('h:i A') }}</li>
                                 @else
-                                    <li>Punch Out at <br>{{ $val->created_at }}</li>
+                                    <li>Punch Out at <br>{{ Carbon::parse($val->created_at)->format('h:i A') }}</li>
                                 @endif
                             @endforeach
                         </ul>
@@ -219,12 +221,7 @@
                 let htmlLi = '';
                 let element = $(this);
                 let action = element.attr('data-action');
-                // let startT = moment('');
-                // let endT = moment('{{ $lastPunchOut }}');
-                // let duration = moment.duration(endT.diff(startT));
-                // $('.punchDiff').html(
-                //     `${duration.hours()}:${duration.minutes()}:${duration.seconds()} hrs`
-                // );
+
                 $.ajax({
                     url: '{{ route('punch.status') }}',
                     type: 'post',
@@ -234,11 +231,14 @@
                     success: function(res) {
                         console.log(res)
                         if (res['punch'] == 1 && res['status'] == true) {
-                            // notif({
-                            //     msg: 'Punched In Succesfully!',
-                            //     type: 'success',
-                            //     fontSize: '23px',
-                            // });
+                            if (!startTime) {
+                                // If no previous start time, start a new timer
+                                startTimer();
+                            } else {
+                                // If there's a previous start time, resume the timer
+                                resumeTimer();
+                            }
+
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "top-end",
@@ -256,12 +256,7 @@
                             });
 
                         } else if (res['punch'] == 0 && res['status'] == true) {
-                            // notif({
-                            //     type: 'success',
-                            //     msg: 'Punched Out Succesfully!',
-                            //     fontSize: '23px',
-
-                            // });
+                            stopTimer();
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "top-end",
@@ -282,10 +277,10 @@
                         res['attendance'].forEach((val) => {
                             if (val.punch_status == 1) {
                                 htmlLi +=
-                                    `<li>Punch In At <br> ${val.created_at}`
+                                    `<li>Punch In At <br> ${moment(val.created_at).format('h:mm A')}`
                             } else {
                                 htmlLi +=
-                                    `<li>Punch Out At <br> ${val.created_at}`
+                                    `<li>Punch Out At <br> ${moment(val.created_at).format('h:mm A')}`
                             }
                             $('.res-activity-list').html(htmlLi);
                         });
@@ -301,15 +296,50 @@
                     }
                 });
             });
+
+            function startTimer() {
+                startTime = moment();
+                timer = setInterval(updateTimer, 1000); // Update every second
+            }
+
+            function resumeTimer() {
+                // Calculate the elapsed time so far
+                const currentTime = moment();
+                const elapsedSinceStart = moment.duration(currentTime.diff(startTime));
+
+                // Adjust the start time by subtracting the elapsed time
+                startTime = moment().subtract(elapsedSinceStart);
+
+                // Start the timer again
+                timer = setInterval(updateTimer, 1000); // Update every second
+            }
+
+            function stopTimer() {
+                clearInterval(timer);
+            }
+
+            function updateTimer() {
+                const currentTime = moment();
+                const elapsedTime = moment.duration(currentTime.diff(startTime));
+
+                const hours = Math.floor(elapsedTime.asHours());
+                const minutes = Math.floor(elapsedTime.minutes());
+                const seconds = Math.floor(elapsedTime.seconds());
+
+                $('#timerValue').text(
+                    hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') +
+                    seconds
+                );
+            }
         });
     </script>
 
 
     <!-- Display live timer and punch-in/punch-out button -->
-    <div>
+    {{-- <div>
         <div id="liveTimer"></div>
         <button onclick="togglePunch()">Punch In/Out</button>
-    </div>
+    </div> --}}
 
     {{-- <script>
     var isPunchedIn = false;
