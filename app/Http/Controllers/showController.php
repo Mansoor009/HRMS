@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -34,14 +33,13 @@ class showController extends Controller
         $userId = Auth::id();
         if (!$userId) {
             abort(404, 'User Id Not Found!');
-        }
-        // dd($currentDate);
-        else {
+        } else {
             $attendance  = DB::table('attendances')
-            ->select('punch_status', 'created_at')
-            ->whereDate('created_at', now()->toDateString())
-            ->where('user_id', $userId)
-            ->get();
+                ->select('punch_status', 'created_at')
+                ->whereDate('created_at', now()->toDateString())
+                ->where('user_id', $userId)
+                ->get();
+             
             $punch = Attendance::select('punch_status')
                 ->where('user_id', $userId)
                 ->orderBy('id', 'DESC')
@@ -64,8 +62,6 @@ class showController extends Controller
                 ->orderBy('id', 'asc')
                 ->value('created_at');
 
-            // dd($firstPunchIn);
-            // return ['']
             return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn]);
         }
     }
@@ -248,7 +244,7 @@ class showController extends Controller
             return response(['status' => false, 'message' => 'Already Punched In']);
         } else {
             Attendance::create($fields);
-            
+
             $result = DB::table('attendances')
                 ->where('user_id', $userId)
                 ->whereDate('created_at', now()->toDateString())

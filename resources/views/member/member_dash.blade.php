@@ -63,7 +63,7 @@
         }
 
         .recent-activity .res-activity-list {
-            height: 328px;
+            height: 312px;
             list-style-type: none;
             overflow-y: auto;
             position: relative;
@@ -209,14 +209,14 @@
 @push('script')
     <script>
         $(document).ready(function() {
-
+            let timer;
+            let startTime;
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var totalElapsedTime = 0;
-            var previousTime
+
             $('.punch-btn').click(function() {
                 let htmlLi = '';
                 let element = $(this);
@@ -231,14 +231,7 @@
                     success: function(res) {
                         console.log(res)
                         if (res['punch'] == 1 && res['status'] == true) {
-                            if (!startTime) {
-                                // If no previous start time, start a new timer
-                                startTimer();
-                            } else {
-                                // If there's a previous start time, resume the timer
-                                resumeTimer();
-                            }
-
+                            startTimer()
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "top-end",
@@ -302,18 +295,6 @@
                 timer = setInterval(updateTimer, 1000); // Update every second
             }
 
-            function resumeTimer() {
-                // Calculate the elapsed time so far
-                const currentTime = moment();
-                const elapsedSinceStart = moment.duration(currentTime.diff(startTime));
-
-                // Adjust the start time by subtracting the elapsed time
-                startTime = moment().subtract(elapsedSinceStart);
-
-                // Start the timer again
-                timer = setInterval(updateTimer, 1000); // Update every second
-            }
-
             function stopTimer() {
                 clearInterval(timer);
             }
@@ -327,73 +308,9 @@
                 const seconds = Math.floor(elapsedTime.seconds());
 
                 $('#timerValue').text(
-                    hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') +
-                    seconds
+                    `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
                 );
             }
         });
     </script>
-
-
-    <!-- Display live timer and punch-in/punch-out button -->
-    {{-- <div>
-        <div id="liveTimer"></div>
-        <button onclick="togglePunch()">Punch In/Out</button>
-    </div> --}}
-
-    {{-- <script>
-    var isPunchedIn = false;
-    var totalElapsedTime = 0;
-    var previousTime;
-
-    // Function to update the live timer
-    function updateLiveTimer() {
-        var liveTimerElement = document.getElementById('liveTimer');
-
-        if (isPunchedIn) {
-            var currentTime = moment();
-
-            // Calculate the time difference since the previous update
-            var elapsedTime = moment.duration(currentTime.diff(previousTime || currentTime));
-            totalElapsedTime += elapsedTime.asMilliseconds();
-
-            // Format the total elapsed time as desired
-            var formattedTime = moment.utc(totalElapsedTime).format('HH:mm:ss');
-
-            // Update the content of the live timer element
-            liveTimerElement.innerText = "Total Elapsed Time: " + formattedTime;
-
-            // Store the current time as the previous time for the next update
-            previousTime = currentTime;
-        } else {
-            liveTimerElement.innerText = "Not Punched In";
-        }
-    }
-
-    // Function to toggle punch-in/punch-out status
-    function togglePunch() {
-        var currentTime = moment();
-
-        if (isPunchedIn) {
-            // If punched in, punch out
-            isPunchedIn = false;
-        } else {
-            // If not punched in, punch in
-            isPunchedIn = true;
-            previousTime = currentTime;
-        }
-    }
-
-    // Update the live timer every second (1000 milliseconds) if punched in
-    setInterval(function() {
-        if (isPunchedIn) {
-            updateLiveTimer();
-        }
-    }, 1000);
-
-    // Initialize the live timer when the page loads
-    window.onload = function() {
-        updateLiveTimer();
-    };
-</script> --}}
 @endpush
