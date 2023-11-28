@@ -143,7 +143,7 @@
                         </div>
                         <div class="punch-info">
                             <div class="punch-hours">
-                                <div id="timer"><span id="timerValue">0:00:00</span></div>
+                                <div id="timer"><span id="timerValue">{{ $begin }}</span></div>
                             </div>
                         </div>
                         <div class="punch-btn-section">
@@ -210,7 +210,7 @@
     <script>
         $(document).ready(function() {
             let timer;
-            let startTime;
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -229,7 +229,12 @@
                         status: action
                     },
                     success: function(res) {
-                        console.log(res)
+                        console.log(res);
+                        startTime = moment().subtract({
+                            hours: res['begin_hours'],
+                            minutes: res['begin_mins'],
+                            seconds: res['begin_seconds']
+                        });
                         if (res['punch'] == 1 && res['status'] == true) {
                             startTimer()
                             const Toast = Swal.mixin({
@@ -290,27 +295,37 @@
                 });
             });
 
+            var startTime = moment().subtract({
+                hours: '{{ $begin_hours }}',
+                minutes: '{{ $begin_mins }}',
+                seconds: '{{ $begin_seconds }}'
+            });
+
             function startTimer() {
-                startTime = moment();
                 timer = setInterval(updateTimer, 1000); // Update every second
             }
 
             function stopTimer() {
-                clearInterval(timer);
+                clearInterval(timer)
             }
 
             function updateTimer() {
                 const currentTime = moment();
                 const elapsedTime = moment.duration(currentTime.diff(startTime));
 
-                const hours = Math.floor(elapsedTime.asHours());
-                const minutes = Math.floor(elapsedTime.minutes());
-                const seconds = Math.floor(elapsedTime.seconds());
+                hours = Math.floor(elapsedTime.asHours());
+                minutes = Math.floor(elapsedTime.minutes());
+                seconds = Math.floor(elapsedTime.seconds());
+
 
                 $('#timerValue').text(
                     `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
                 );
             }
+
+            @if ($punch == 1)
+                startTimer()
+            @endif
         });
     </script>
 @endpush

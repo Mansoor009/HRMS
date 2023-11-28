@@ -16,6 +16,49 @@ use Carbon\Carbon;
 
 class showController extends Controller
 {
+
+    public function Timer($punch)
+    {
+        $userId = Auth::id();
+        $timerRecords = DB::table('attendances')
+            ->select('created_at', 'punch_status')
+            ->whereDate('created_at', now()->toDateString())
+            ->where('user_id', $userId)
+            ->get();
+
+        $timeDifference = [];
+        $totalTime = Carbon::create('00:00:00');
+        // dd($totalTime);
+        foreach ($timerRecords as $record) {
+            $punchStatus = $record->punch_status;
+            if ($punchStatus == 1) {
+                $punchIn = $record->created_at;
+            } else {
+                if (isset($punchIn)) {
+                    if ($punchStatus == 0) {
+                        $punchOut = $record->created_at;
+                    }
+                    $difference = Carbon::parse($punchOut)->diff(Carbon::parse($punchIn));
+                    $timeDifference[] = $difference;
+                    unset($punchIn);
+                }
+            }
+        }
+        if ($punch == 1) {
+            $difference = Carbon::parse(now())->diff(Carbon::parse($punchIn));
+            $timeDifference[] = $difference;
+        }
+        $begin = Carbon::createFromFormat('H:i:s', '00:00:00');
+
+            foreach ($timeDifference as $element) {
+                $begin = $begin->addHours($element->format('%h'))
+                    ->addMinutes($element->format('%i'))
+                    ->addSeconds($element->format('%s'));
+            }
+
+        return $begin;
+    }
+
     //main page
     public function showAdminData()
     {
@@ -39,7 +82,7 @@ class showController extends Controller
                 ->whereDate('created_at', now()->toDateString())
                 ->where('user_id', $userId)
                 ->get();
-             
+
             $punch = Attendance::select('punch_status')
                 ->where('user_id', $userId)
                 ->orderBy('id', 'DESC')
@@ -62,7 +105,19 @@ class showController extends Controller
                 ->orderBy('id', 'asc')
                 ->value('created_at');
 
-            return view('member.member_dash', ['users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn]);
+            $begin = $this->Timer($punch);
+
+
+
+            return view('member.member_dash', [
+                'users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn,
+                'begin' => $begin->format('h:i:s'),
+                'begin_hours' => $begin->format('h'),
+
+                'begin_mins' => $begin->format('i'),
+                'begin_seconds' => $begin->format('s'),
+
+            ]);
         }
     }
 
@@ -250,7 +305,20 @@ class showController extends Controller
                 ->whereDate('created_at', now()->toDateString())
                 ->get();
 
-            return response(['status' => true, 'punch' => $request->status, 'attendance' => $result]);
+                $punch = Attendance::select('punch_status')
+                ->where('user_id', $userId)
+                ->orderBy('id', 'DESC')
+                ->pluck('punch_status')
+                ->first();
+
+                $begin = $this->Timer($punch);
+
+
+
+            return response(['status' => true, 'punch' => $request->status, 'attendance' => $result, 'begin' => $begin->format('h:i:s'),
+            'begin_hours' => $begin->format('h'),
+            'begin_mins' => $begin->format('i'),
+            'begin_seconds' => $begin->format('s'),]);
         }
     }
 }
