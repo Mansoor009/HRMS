@@ -20,11 +20,12 @@ class leaveControlls extends Controller
     {
         $userId = Auth::id();
         $leave_count = leaveCountModel::where('user_id', $userId)->get();
-        return view('member.leave_dash', ['leave_count' => $leave_count, 'sick' => config('constants.SICK_LEAVE'), 'paid' => config('constants.PAID_LEAVE'), 'festive' => config('constants.FESTIVE_LEAVE')]);
+        return view('member.leave_dash', ['leave_count' => $leave_count, 'sick' => SICK_LEAVE, 'paid' => PAID_LEAVE, 'festive' => FESTIVE_LEAVE]);
     }
 
     public function leaveEmpControll(Request $request)
     {
-        return response(['response' => $request->from]);
+        dd($request);
+        return response(['response' => $request]);
     }
 }
