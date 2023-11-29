@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\leaveControlls;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\showController;
 
@@ -18,3 +19,5 @@ Route::post('/delete/{id}',[showController::class,'deleteData'])->name('remove.d
 Route::get('/edit/{id}',[showController::class,'getData'])->name('edit.data');
 Route::post('/status',[showController::class,'statusChange'])->name('update.status');
 Route::post('/punchStatus',[showController::class,'punchStatus'])->name('punch.status');
+Route::get('/emloyees-leaves',[leaveControlls::class,'leaveEmpView'])->name('leave.dashboard');
+Route::post('/emloyees-leaves',[leaveControlls::class,'leaveEmpControll'])->name('leave.dashboard.controll');

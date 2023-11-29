@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\leaveCountModel;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Illuminate\Contracts\Session\Session;
@@ -16,7 +17,6 @@ use Carbon\Carbon;
 
 class showController extends Controller
 {
-
     public function Timer($punch)
     {
         $userId = Auth::id();
@@ -111,8 +111,8 @@ class showController extends Controller
 
             return view('member.member_dash', [
                 'users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn,
-                'begin' => $begin->format('h:i:s'),
-                'begin_hours' => $begin->format('h'),
+                'begin' => $begin->format('H:i:s'),
+                'begin_hours' => $begin->format('H'),
 
                 'begin_mins' => $begin->format('i'),
                 'begin_seconds' => $begin->format('s'),
@@ -157,10 +157,17 @@ class showController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role' => 'member'
             ]);
+            $lastId = $user->id;
+            $leave_count = leaveCountModel::create([
+                'user_id' => $lastId,
+                'sick_leave' => 6,
+                'paid_leave' => 12,
+                'festive_leave' => 6
+            ]);
             if (!$user) {
                 return response(['error' => 'Registration Failed Please Try Again']);
             } else {
-                return response(['status' => true]);
+                return response(['status' => true, 'leave_count' => $leave_count]);
             }
         }
     }
@@ -316,7 +323,7 @@ class showController extends Controller
 
 
             return response(['status' => true, 'punch' => $request->status, 'attendance' => $result, 'begin' => $begin->format('h:i:s'),
-            'begin_hours' => $begin->format('h'),
+            'begin_hours' => $begin->format('H'),
             'begin_mins' => $begin->format('i'),
             'begin_seconds' => $begin->format('s'),]);
         }

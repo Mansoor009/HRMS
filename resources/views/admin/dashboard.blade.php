@@ -69,6 +69,11 @@
         </div>
     </div>
 @endsection
+
+@section('sidebar')
+    @include('layouts.admin_sidebar')
+@endsection
+
 @push('script')
     <script>
         $(document).ready(function() {

@@ -206,6 +206,11 @@
     </div>
 
 @endsection
+
+@section('sidebar')
+    @include('layouts.member_sidebar')
+@endsection
+
 @push('script')
     <script>
         $(document).ready(function() {
@@ -229,7 +234,7 @@
                         status: action
                     },
                     success: function(res) {
-                        console.log(res);
+                        console.log(res['begin_hours'])
                         startTime = moment().subtract({
                             hours: res['begin_hours'],
                             minutes: res['begin_mins'],
