@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('description',140);
             $table->boolean('status')->nullable()->comment('1 = approved, 0 = denied, null = pending');
             $table->string('leave_type')->comment('1 = sick leave,2 = festive leave, 3 = paid leave');
-            $table->integer('no_of_days')->comment('No. of Leave taken');
-            $table->string('reject_reason',140);
+            $table->integer('no_of_days')->comment('No. of Leave taken')->nullable();
+            $table->string('reject_reason',140)->nullable();
             $table->timestamps();
         });
     }

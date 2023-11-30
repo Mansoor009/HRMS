@@ -21,3 +21,5 @@ Route::post('/status',[showController::class,'statusChange'])->name('update.stat
 Route::post('/punchStatus',[showController::class,'punchStatus'])->name('punch.status');
 Route::get('/emloyees-leaves',[leaveControlls::class,'leaveEmpView'])->name('leave.dashboard');
 Route::post('/emloyees-leaves',[leaveControlls::class,'leaveEmpControll'])->name('leave.dashboard.controll');
+Route::get('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveView'])->name('admin.leave.dashboard');
+Route::post('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveControll'])->name('admin.leave.controll');

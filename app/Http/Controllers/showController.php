@@ -27,8 +27,7 @@ class showController extends Controller
             ->get();
 
         $timeDifference = [];
-        $totalTime = Carbon::create('00:00:00');
-        // dd($totalTime);
+
         foreach ($timerRecords as $record) {
             $punchStatus = $record->punch_status;
             if ($punchStatus == 1) {
@@ -40,21 +39,23 @@ class showController extends Controller
                     }
                     $difference = Carbon::parse($punchOut)->diff(Carbon::parse($punchIn));
                     $timeDifference[] = $difference;
+                    // print_r($timeDifference);
                     unset($punchIn);
                 }
             }
         }
-        if ($punch == 1) {
+        if ($punch == 1 && isset($punch)) {
             $difference = Carbon::parse(now())->diff(Carbon::parse($punchIn));
             $timeDifference[] = $difference;
+            // dd($timeDifference);
         }
         $begin = Carbon::createFromFormat('H:i:s', '00:00:00');
 
-            foreach ($timeDifference as $element) {
-                $begin = $begin->addHours($element->format('%h'))
-                    ->addMinutes($element->format('%i'))
-                    ->addSeconds($element->format('%s'));
-            }
+        foreach ($timeDifference as $element) {
+            $begin = $begin->addHours($element->format('%h'))
+                ->addMinutes($element->format('%i'))
+                ->addSeconds($element->format('%s'));
+        }
 
         return $begin;
     }
@@ -110,10 +111,12 @@ class showController extends Controller
 
 
             return view('member.member_dash', [
-                'users' => $users, 'attendance' => $attendance, 'punch' => $punch, 'lastPunchOut' => $lastPunchOut, 'firstPunchIn' => $firstPunchIn,
+                'users' => $users, 'attendance' => $attendance,
+                'punch' => $punch,
+                'lastPunchOut' => $lastPunchOut,
+                'firstPunchIn' => $firstPunchIn,
                 'begin' => $begin->format('H:i:s'),
                 'begin_hours' => $begin->format('H'),
-
                 'begin_mins' => $begin->format('i'),
                 'begin_seconds' => $begin->format('s'),
 
@@ -227,10 +230,17 @@ class showController extends Controller
             'token' => $token
         ]);
 
-        $response  = Mail::send('email.forget_password', ['token' => $token, 'email' => $request->email], function ($message) use ($request) {
-            $message->to($request->email);
-            $message->subject('Reset Password');
-        });
+        $response  = Mail::send(
+            'email.forget_password',
+            [
+                'token' => $token,
+                'email' => $request->email
+            ],
+            function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('Reset Password');
+            }
+        );
 
         return response(['Message' => 'Email Sent', 'status' => true]);
         // return  redirect()->to(route('forgotPassword'))->with(['success' => 'Email Send']);
@@ -312,20 +322,24 @@ class showController extends Controller
                 ->whereDate('created_at', now()->toDateString())
                 ->get();
 
-                $punch = Attendance::select('punch_status')
+            $punch = Attendance::select('punch_status')
                 ->where('user_id', $userId)
                 ->orderBy('id', 'DESC')
                 ->pluck('punch_status')
                 ->first();
 
-                $begin = $this->Timer($punch);
+            $begin = $this->Timer($punch);
 
 
 
-            return response(['status' => true, 'punch' => $request->status, 'attendance' => $result, 'begin' => $begin->format('h:i:s'),
-            'begin_hours' => $begin->format('H'),
-            'begin_mins' => $begin->format('i'),
-            'begin_seconds' => $begin->format('s'),]);
+            return response([
+                'status' => true, 'punch' => $request->status,
+                'attendance' => $result,
+                'begin' => $begin->format('h:i:s'),
+                'begin_hours' => $begin->format('H'),
+                'begin_mins' => $begin->format('i'),
+                'begin_seconds' => $begin->format('s'),
+            ]);
         }
     }
 }

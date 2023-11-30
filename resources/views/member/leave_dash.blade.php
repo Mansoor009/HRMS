@@ -20,7 +20,7 @@
         <div class="table-cover">
             <div class="row">
                 <div class="col-lg-12">
-                    <table class="table table-striped table-bordered table-responsive-lg">
+                    <table class="table table-bordered table-striped table-responsive-lg">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -36,7 +36,20 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                                @foreach ($leave_records as $record)
+                                <tr>
+                                    <td scope='col'>{{$record['id']}}</td>
+                                    <td scope='col'>{{$record['user_id']}}</td>
+                                    <td scope='col'>{{$record['title']}}</td>
+                                    <td scope='col'>{{$record['from_leave']}}</td>
+                                    <td scope='col'>{{$record['to_leave']}}</td>
+                                    <td scope='col'>{{$record['description']}}</td>
+                                    <td scope='col'>{{$record['status']}}</td>
+                                    <td scope='col'>{{$record['leave_type']}}</td>
+                                    <td scope='col'>{{$record['no_of_days']}}</td>
+                                    <td scope='col'>{{$record['reject_reason']}}</td>
+                                </tr>
+                                @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -64,7 +77,8 @@
                                                 <label for="title" class="form-label">Leave Title</label>
                                                 <input type="text" class="form-control" id="title" name='title'>
                                             </div>
-                                            <select class="form-select" aria-label="Default select example">
+                                            <select class="form-select" aria-label="Default select example" name="select"
+                                                id="select">
                                                 <option selected>Leave Account</option>
                                                 <option data-bal="{{ $leave_count[0]['sick_leave'] }}"
                                                     value="{{ $sick }}">Sick
@@ -121,13 +135,12 @@
                 },
                 submitHandler: function() {
                     let data = $('#leave-application').serialize();
-                    // let select = $("#select option:selected").data('bal');
                     $.ajax({
-                        url: "{{route('leave.dashboard.controll')}}",
+                        url: "{{ route('leave.dashboard.controll') }}",
                         type: "post",
                         data: data,
-                        success: function (res) {
-                            console.log(res)
+                        success: function(res) {
+                            location.reload();
                         }
                     });
                 }

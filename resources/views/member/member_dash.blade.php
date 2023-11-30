@@ -324,7 +324,7 @@
 
 
                 $('#timerValue').text(
-                    `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+                    `0${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
                 );
             }
 

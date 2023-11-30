@@ -57,7 +57,7 @@
                 <a class="side-menu__item" data-bs-toggle="slide" href="{{route('admin.dashboard')}}"><i class="side-menu__icon fe fe-box"></i><span class="side-menu__label">All Employee</span></a>
             </li>
             <li class="slide">
-                <a class="side-menu__item" data-bs-toggle="slide" href="/mansoor/admin/employee-leaves.php"><i class="side-menu__icon fe fe-award "></i><span class="side-menu__label">Leaves(Employee)</span></a>
+                <a class="side-menu__item" data-bs-toggle="slide" href="{{route('admin.leave.dashboard')}}"><i class="side-menu__icon fe fe-award "></i><span class="side-menu__label">Leaves(Employee)</span></a>
             </li>
             <li class="slide">
                 <a class="side-menu__item" data-bs-toggle="slide" href="/mansoor/admin/holidays.php"><i class="side-menu__icon fe fe-layers "></i><span class="side-menu__label">Holidays</span></a>
