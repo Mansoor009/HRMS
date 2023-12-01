@@ -24,7 +24,6 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">User Id</th>
                                 <th scope="col">Leave Title</th>
                                 <th scope="col">From</th>
                                 <th scope="col">To</th>
@@ -36,20 +35,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                                @foreach ($leave_records as $record)
+                            @foreach ($leave_records as $record)
+                                @php
+                                    switch ($record['leave_type']) {
+                                        case SICK_LEAVE:
+                                            $type = 'Sick Leave';
+                                            break;
+                                        case PAID_LEAVE:
+                                            $type = 'Paid Leave';
+                                            break;
+                                        case FESTIVE_LEAVE:
+                                            $type = 'Festive Leave';
+                                            break;
+                                        default:
+                                            $type = 'Unknown Leave Type';
+                                    }
+                                    switch ($record['status']) {
+                                        case '1':
+                                            $status = 'Approved';
+                                            break;
+                                        case '0':
+                                            $status = 'Rejected';
+                                            break;
+                                        default:
+                                            $status = 'Pending';
+                                            break;
+                                    }
+                                @endphp
+
                                 <tr>
-                                    <td scope='col'>{{$record['id']}}</td>
-                                    <td scope='col'>{{$record['user_id']}}</td>
-                                    <td scope='col'>{{$record['title']}}</td>
-                                    <td scope='col'>{{$record['from_leave']}}</td>
-                                    <td scope='col'>{{$record['to_leave']}}</td>
-                                    <td scope='col'>{{$record['description']}}</td>
-                                    <td scope='col'>{{$record['status']}}</td>
-                                    <td scope='col'>{{$record['leave_type']}}</td>
-                                    <td scope='col'>{{$record['no_of_days']}}</td>
-                                    <td scope='col'>{{$record['reject_reason']}}</td>
+                                    <td scope='col'>{{ $record['id'] }}</td>
+                                    <td scope='col'>{{ $record['title'] }}</td>
+                                    <td scope='col'>{{ $record['from_leave'] }}</td>
+                                    <td scope='col'>{{ $record['to_leave'] }}</td>
+                                    <td scope='col'>{{ $record['description'] }}</td>
+                                    <td scope='col'>{{ $status }}</td>
+                                    <td scope='col'>{{ $type }}</td>
+                                    <td scope='col'>{{ $record['no_of_days'] }}</td>
+                                    <td scope='col'>{{ $record['reject_reason'] }}</td>
                                 </tr>
-                                @endforeach
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

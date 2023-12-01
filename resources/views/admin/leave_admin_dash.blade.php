@@ -88,11 +88,11 @@
                     $(this).attr('disabled','')
                 }
                 else{
-                    let reason = promt('Rejection Reason')
+                    var reason = prompt('Rejection Reason')
                 }
                 $.ajax({
-                    type: "post",
-                    url: "{{route('admin.leave.controll')}}",
+                    url: '{{route('admin.leave.controll')}}',
+                    type: 'post',
                     data: {
                         id:id,
                         val:val,

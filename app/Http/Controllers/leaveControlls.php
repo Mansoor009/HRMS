@@ -68,7 +68,10 @@ class leaveControlls extends Controller
     }
 
     public function adminLeaveControll(Request $request){
-        $insert = leaveRecordModel::where('id',$request->id)->update('status',$request->val);
+        $insert = leaveRecordModel::where('id',$request->id)
+        ->update(['status' => $request->val,
+        'reject_reason' => $request->reason]);
+
         return response(['value' => $request->val]);
     }
 }
