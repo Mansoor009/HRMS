@@ -19,12 +19,14 @@ class leaveControlls extends Controller
         $userId = Auth::id();
         $leave_count = leaveCountModel::where('user_id', $userId)->get();
         $leave_record = leaveRecordModel::where('user_id', $userId)->get();
+        // dd($leave_count);
         return view('member.leave_dash', [
             'leave_count' => $leave_count,
             'sick' => SICK_LEAVE,
             'paid' => PAID_LEAVE,
             'festive' => FESTIVE_LEAVE,
-            'leave_records' => $leave_record
+            'leave_records' => $leave_record, 
+            'id' => $userId
         ]);
     }
 
@@ -62,16 +64,27 @@ class leaveControlls extends Controller
         }
     }
 
-    public function adminLeaveView(){
+    public function adminLeaveView()
+    {
         $leave_record = leaveRecordModel::all();
-        return view('admin.leave_admin_dash',['leave_records' => $leave_record]);
+        return view('admin.leave_admin_dash', ['leave_records' => $leave_record]);
     }
 
-    public function adminLeaveControll(Request $request){
-        $insert = leaveRecordModel::where('id',$request->id)
-        ->update(['status' => $request->val,
-        'reject_reason' => $request->reason]);
+    public function adminLeaveControll(Request $request)
+    {
+        $insert = leaveRecordModel::where('id', $request->id)
+            ->update([
+                'status' => $request->val,
+                'reject_reason' => $request->reason
+            ]);
 
         return response(['value' => $request->val]);
+    }
+
+    public function memberLeaveCount()
+    {
+        $userId = Auth::id();
+        $account = leaveCountModel::where('user_id',$userId)->get();
+        return response(['account' => $account]);
     }
 }

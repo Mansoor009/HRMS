@@ -23,3 +23,4 @@ Route::get('/emloyees-leaves',[leaveControlls::class,'leaveEmpView'])->name('lea
 Route::post('/emloyees-leaves',[leaveControlls::class,'leaveEmpControll'])->name('leave.dashboard.controll');
 Route::get('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveView'])->name('admin.leave.dashboard');
 Route::post('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveControll'])->name('admin.leave.controll');
+Route::post('/select',[leaveControlls::class,'memberLeaveCount'])->name('select.val');

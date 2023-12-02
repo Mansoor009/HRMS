@@ -102,8 +102,8 @@
                                                 <label for="title" class="form-label">Leave Title</label>
                                                 <input type="text" class="form-control" id="title" name='title'>
                                             </div>
-                                            <select class="form-select" aria-label="Default select example" name="select"
-                                                id="select">
+                                            <select class="form-select select" name="select" id="select"
+                                                data-id='{{ $id }}'>
                                                 <option selected>Leave Account</option>
                                                 <option data-bal="{{ $leave_count[0]['sick_leave'] }}"
                                                     value="{{ $sick }}">Sick
@@ -115,6 +115,7 @@
                                                     value="{{ $festive }}">
                                                     Festive Leave</option>
                                             </select>
+                                            <span class="check_account"></span>
                                             <div class="mb-3">
                                                 <label for="from" class="form-label">From</label>
                                                 <input type="date" class="form-control" id="from" name="from">
@@ -127,6 +128,7 @@
                                                 <label for="desc" class="form-label">Add Description</label>
                                                 <textarea class="form-control" id="desc" rows="3" name="desc"></textarea>
                                             </div>
+                                            <input type="hidden" name="user_id" id="user_id">
                                             <button type="submit" class="btn btn-success">Submit</button>
                                         </form>
                                     </div>
@@ -161,14 +163,44 @@
                 submitHandler: function() {
                     let data = $('#leave-application').serialize();
                     $.ajax({
-                        url: "{{ route('leave.dashboard.controll') }}",
-                        type: "post",
+                        url: '{{ route('leave.dashboard.controll') }}',
+                        type: 'post',
                         data: data,
                         success: function(res) {
                             location.reload();
                         }
                     });
                 }
+            });
+            $('.select').change(function() {
+                let selectVal = $('.select option:selected').val();
+                $.ajax({
+                    url: '{{ route('select.val') }}',
+                    type: 'post',
+                    success: function(res) {
+                        if(selectVal == 1){
+                            if (res['account'][0].sick_leave <= 0) {
+                                $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'red');
+                            }
+                            $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'green');
+                        }
+                        else if(selectVal == 2){
+                            if (res['account'][0].sick_leave <= 0) {
+                                $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'red');
+                            }
+                            $('.check_account').html(`${res['account'][0].paid_leave} Paid Leave Remaining`).css('color', 'green');
+                        }
+                        else if(selectVal == 3){
+                            if (res['account'][0].sick_leave <= 0) {
+                                $('.check_account').html(`${res['account'][0].festive_leave} Festive Leave Remaining`).css('color', 'red');
+                            }
+                            $('.check_account').html(`${res['account'][0].festive_leave} Festive Leave Remaining`).css('color', 'green');
+                        }
+                        else{
+                            alert('something went wrong');
+                        }
+                    }
+                });
             });
         });
     </script>

@@ -9,6 +9,15 @@
         .table-cover table {
             background-color: white;
         }
+
+        .status {
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .status:focus {
+            box-shadow: rgb(172, 210, 255) 0px 1px 4px, rgb(172, 210, 255) 0px 0px 0px 3px;
+        }
     </style>
 @endpush
 @section('section')
@@ -45,12 +54,15 @@
                                     <td scope='col'>{{ $record['to_leave'] }}</td>
                                     <td scope='col'>{{ $record['description'] }}</td>
                                     <td scope='col'>
-                                        <select class="status" name="status" id="status" data-id="{{ $record['id'] }}">
-                                            <option {{ is_null($record['status']) ? 'selected' : '' }} value="">Pending
+                                        <select class="status" name="status" id="status" data-id="{{ $record['id'] }}"
+                                            {{ $record['status'] == 1 ? 'disabled' : '' }}>
+                                            <option {{ is_null($record['status']) ? 'selected' : '' }} value="">
+                                                Pending
                                             </option>
                                             <option {{ $record['status'] == '1' ? 'selected' : '' }} value="1">Approved
                                             </option>
-                                            <option {{ $record['status'] == '0' ? 'selected' : '' }} value="0">Rejected
+                                            <option {{ $record['status'] == '0' ? 'selected' : '' }} value="0">
+                                                Rejected
                                             </option>
                                         </select>
                                     </td>
@@ -73,7 +85,7 @@
 
 @push('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $.ajaxSetup({
                 headers: {
@@ -81,24 +93,23 @@
                 }
             });
 
-            $('.status').change(function(){
+            $('.status').change(function() {
                 let id = $(this).data('id');
                 let val = $(this).val();
                 if (val == '1') {
-                    $(this).attr('disabled','')
-                }
-                else{
+                    $(this).attr('disabled', '')
+                } else {
                     var reason = prompt('Rejection Reason')
                 }
                 $.ajax({
-                    url: '{{route('admin.leave.controll')}}',
+                    url: '{{ route('admin.leave.controll') }}',
                     type: 'post',
                     data: {
-                        id:id,
-                        val:val,
-                        reason:reason
+                        id: id,
+                        val: val,
+                        reason: reason
                     },
-                    success: function (res) {
+                    success: function(res) {
                         console.log(res)
                     }
                 });
