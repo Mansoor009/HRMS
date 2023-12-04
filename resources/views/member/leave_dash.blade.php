@@ -102,20 +102,22 @@
                                                 <label for="title" class="form-label">Leave Title</label>
                                                 <input type="text" class="form-control" id="title" name='title'>
                                             </div>
-                                            <select class="form-select select" name="select" id="select"
-                                                data-id='{{ $id }}'>
-                                                <option selected>Leave Account</option>
-                                                <option data-bal="{{ $leave_count[0]['sick_leave'] }}"
-                                                    value="{{ $sick }}">Sick
-                                                    Leave</option>
-                                                <option data-bal="{{ $leave_count[0]['paid_leave'] }}"
-                                                    value="{{ $paid }}">Paid
-                                                    Leave</option>
-                                                <option data-bal="{{ $leave_count[0]['festive_leave'] }}"
-                                                    value="{{ $festive }}">
-                                                    Festive Leave</option>
-                                            </select>
-                                            <span class="check_account"></span>
+                                            <div class="mb-1">
+                                                <select class="form-select select" name="select" id="select"
+                                                    data-id='{{ $id }}'>
+                                                    <option selected>Leave Account</option>
+                                                    <option data-bal="{{ $leave_count[0]['sick_leave'] }}"
+                                                        value="{{ $sick }}">Sick
+                                                        Leave</option>
+                                                    <option data-bal="{{ $leave_count[0]['paid_leave'] }}"
+                                                        value="{{ $paid }}">Paid
+                                                        Leave</option>
+                                                    <option data-bal="{{ $leave_count[0]['festive_leave'] }}"
+                                                        value="{{ $festive }}">
+                                                        Festive Leave</option>
+                                                </select>
+                                            </div>
+                                                <span class="check_account"></span>
                                             <div class="mb-3">
                                                 <label for="from" class="form-label">From</label>
                                                 <input type="date" class="form-control" id="from" name="from">
@@ -178,27 +180,23 @@
                     url: '{{ route('select.val') }}',
                     type: 'post',
                     success: function(res) {
-                        if(selectVal == 1){
-                            if (res['account'][0].sick_leave <= 0) {
-                                $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'red');
-                            }
-                            $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'green');
+                        let leaveType, leaveCount;
+                        if (selectVal == 1) {
+                            leaveCount = res['account'][0].sick_leave;
+                            leaveType = 'Sick';
+                        } else if (selectVal == 2) {
+                            leaveCount = res['account'][0].paid_leave;
+                            leaveType = 'Paid';
+                        } else if (selectVal == 3) {
+                            leaveCount = res['account'][0].festive_leave;
+                            leaveType = 'Festive';
+                        } else {
+                            leaveCount = 0;
+                            leaveType;
                         }
-                        else if(selectVal == 2){
-                            if (res['account'][0].sick_leave <= 0) {
-                                $('.check_account').html(`${res['account'][0].sick_leave} Sick Leave Remaining`).css('color', 'red');
-                            }
-                            $('.check_account').html(`${res['account'][0].paid_leave} Paid Leave Remaining`).css('color', 'green');
-                        }
-                        else if(selectVal == 3){
-                            if (res['account'][0].sick_leave <= 0) {
-                                $('.check_account').html(`${res['account'][0].festive_leave} Festive Leave Remaining`).css('color', 'red');
-                            }
-                            $('.check_account').html(`${res['account'][0].festive_leave} Festive Leave Remaining`).css('color', 'green');
-                        }
-                        else{
-                            alert('something went wrong');
-                        }
+                        const message = `${leaveCount} ${leaveType} Leave Available`;
+                        $('.check_account').html(message).css('color', leaveCount > 0 ? 'green' :
+                            'red');
                     }
                 });
             });

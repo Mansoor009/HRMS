@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\leaveCountModel;
 use App\Models\leaveRecordModel;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
@@ -72,11 +71,17 @@ class leaveControlls extends Controller
 
     public function adminLeaveControll(Request $request)
     {
-        $insert = leaveRecordModel::where('id', $request->id)
+        $fetch = leaveRecordModel::select('leave_type','no_of_days')->where('id',$request->id)->orderBy('id','desc')->first();
+        dd($fetch);
+        $update = leaveRecordModel::where('id', $request->id)
+        
             ->update([
                 'status' => $request->val,
                 'reject_reason' => $request->reason
             ]);
+            if ($request->val == 1) {
+                $count = leaveCountModel::where('user_id',$request->id)->update(['  ']);
+            }
 
         return response(['value' => $request->val]);
     }

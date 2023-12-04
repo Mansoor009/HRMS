@@ -55,7 +55,7 @@
                                     <td scope='col'>{{ $record['description'] }}</td>
                                     <td scope='col'>
                                         <select class="status" name="status" id="status" data-id="{{ $record['id'] }}"
-                                            {{ $record['status'] == 1 ? 'disabled' : '' }}>
+                                            {{ $record['status'] == 1 ? 'disabled' : '' }}> 
                                             <option {{ is_null($record['status']) ? 'selected' : '' }} value="">
                                                 Pending
                                             </option>
