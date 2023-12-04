@@ -234,7 +234,17 @@
                         status: action
                     },
                     success: function(res) {
-                        console.log(res['begin_hours'])
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
                         startTime = moment().subtract({
                             hours: res['begin_hours'],
                             minutes: res['begin_mins'],
@@ -242,17 +252,6 @@
                         });
                         if (res['punch'] == 1 && res['status'] == true) {
                             startTimer()
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
                             Toast.fire({
                                 icon: "success",
                                 title: "Punched In Successfully"
@@ -260,17 +259,6 @@
 
                         } else if (res['punch'] == 0 && res['status'] == true) {
                             stopTimer();
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
                             Toast.fire({
                                 icon: "success",
                                 title: "Punched Out Successfully"

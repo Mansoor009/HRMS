@@ -24,7 +24,7 @@ class leaveControlls extends Controller
             'sick' => SICK_LEAVE,
             'paid' => PAID_LEAVE,
             'festive' => FESTIVE_LEAVE,
-            'leave_records' => $leave_record, 
+            'leave_records' => $leave_record,
             'id' => $userId
         ]);
     }
@@ -35,6 +35,20 @@ class leaveControlls extends Controller
         if (!$userId) {
             abort(404, 'User Id Not Found!');
         } else {
+            switch ($request->select) {
+                case SICK_LEAVE:
+                    $col = 'sick_leave';
+                    break;
+                case PAID_LEAVE:
+                    $col = 'paid_leave';
+                    break;
+                case FESTIVE_LEAVE:
+                    $col = 'festive_leave';
+                    break;
+            }
+            $bal = leaveCountModel::select($col)->where('user_id', $userId)->get();
+            $balance = $bal->pluck($col)->first();
+
             $collect = new DateInterval('P1D');
             $days = 0;
             $fdate = $request->from;
@@ -48,18 +62,21 @@ class leaveControlls extends Controller
                 }
                 $start->add($collect);
             }
-
-            $leave_record = leaveRecordModel::create([
-                'user_id' => $userId,
-                'title' => $request->title,
-                'from_leave' => $request->from,
-                'to_leave' => $request->to,
-                'description' => $request->desc,
-                'leave_type' => $request->select,
-                'no_of_days' => $days
-            ]);
-
-            return response(['status' => true, 'data' => $leave_record]);
+            if ($days <= $balance) {
+                $leave_record = leaveRecordModel::create([
+                    'user_id' => $userId,
+                    'title' => $request->title,
+                    'from_leave' => $request->from,
+                    'to_leave' => $request->to,
+                    'description' => $request->desc,
+                    'leave_type' => $request->select,
+                    'no_of_days' => $days
+                ]);
+                return response(['status' => true, 'data' => $leave_record]);
+            } else {
+                $error = 'Your Leave Balance is Exceeding';
+                return response(['status' => false, 'data' => $error]);
+            }
         }
     }
 
@@ -71,25 +88,52 @@ class leaveControlls extends Controller
 
     public function adminLeaveControll(Request $request)
     {
-        $fetch = leaveRecordModel::select('leave_type','no_of_days')->where('id',$request->id)->orderBy('id','desc')->first();
-        dd($fetch);
-        $update = leaveRecordModel::where('id', $request->id)
-        
-            ->update([
-                'status' => $request->val,
-                'reject_reason' => $request->reason
-            ]);
-            if ($request->val == 1) {
-                $count = leaveCountModel::where('user_id',$request->id)->update(['  ']);
+        if (isset($request->val)) {
+            $val = leaveRecordModel::where('id', $request->id)->update(['status' => $request->val]);
+        } else {
+            echo 'Reason is not posted Or Your leave Is Approved';
+        }
+
+        if (isset($request->reason)) {
+            $reason = leaveRecordModel::where('id', $request->id)->update(['reject_reason' => $request->reason]);
+        } else {
+            echo 'Value is null';
+        }
+
+        if ($request->val == 1) {
+            $fetch = leaveRecordModel::select('leave_type', 'no_of_days')->where('id', $request->id)->get();
+            $leave_type = $fetch->pluck('leave_type')->first();
+            $no_of_days = $fetch->pluck('no_of_days')->first();
+
+            switch ($leave_type) {
+                case SICK_LEAVE:
+                    $col = 'sick_leave';
+                    break;
+                case PAID_LEAVE:
+                    $col = 'paid_leave';
+                    break;
+                case FESTIVE_LEAVE:
+                    $col = 'festive_leave';
+                    break;
             }
 
+            $deduct = leaveCountModel::where('user_id', $request->user_id)->update([$col => DB::raw("$col - $no_of_days")]);
+        }
         return response(['value' => $request->val]);
     }
 
     public function memberLeaveCount()
     {
         $userId = Auth::id();
-        $account = leaveCountModel::where('user_id',$userId)->get();
+        $account = leaveCountModel::where('user_id', $userId)->get();
         return response(['account' => $account]);
+    }
+
+    public function holidayView(){
+        return view('admin.holidays_list');
+    }
+
+    public function holidayControll(Request $request){
+         
     }
 }

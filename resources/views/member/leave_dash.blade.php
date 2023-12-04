@@ -117,7 +117,7 @@
                                                         Festive Leave</option>
                                                 </select>
                                             </div>
-                                                <span class="check_account"></span>
+                                            <span class="check_account"></span>
                                             <div class="mb-3">
                                                 <label for="from" class="form-label">From</label>
                                                 <input type="date" class="form-control" id="from" name="from">
@@ -156,29 +156,15 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#leave-application').validate({
-                rules: {
-                    title: "required",
-                    from: "required",
-                    to: "required",
-                },
-                submitHandler: function() {
-                    let data = $('#leave-application').serialize();
-                    $.ajax({
-                        url: '{{ route('leave.dashboard.controll') }}',
-                        type: 'post',
-                        data: data,
-                        success: function(res) {
-                            location.reload();
-                        }
-                    });
-                }
-            });
+
             $('.select').change(function() {
                 let selectVal = $('.select option:selected').val();
                 $.ajax({
                     url: '{{ route('select.val') }}',
                     type: 'post',
+                    beforeSend: function() {
+                        $('.check_account').html('Loading....').css('color', 'black')
+                    },
                     success: function(res) {
                         let leaveType, leaveCount;
                         if (selectVal == 1) {
@@ -195,10 +181,46 @@
                             leaveType;
                         }
                         const message = `${leaveCount} ${leaveType} Leave Available`;
-                        $('.check_account').html(message).css('color', leaveCount > 0 ? 'green' :
+                        $('.check_account').html(message).css('color', leaveCount > 0 ?
+                            'green' :
                             'red');
                     }
                 });
+            });
+
+            $('#leave-application').validate({
+                rules: {
+                    title: "required",
+                    from: "required",
+                    to: "required",
+                },
+                submitHandler: function() {
+                    let data = $('#leave-application').serialize();
+                    $.ajax({
+                        url: '{{ route('leave.dashboard.controll') }}',
+                        type: 'post',
+                        data: data,
+                        success: function(res) {
+                            if (res['status'] == true) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Leave Recorded Successfully",
+                                    text: "Leave request submitted successfully. You will be notified of the status soon. Thank you for your cooperation"
+                                });
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1300);
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Your Leave Balance is Exceeding",
+                                    text: "Leave request Denied. Your Leave Limit is Exceeding, Therefore We can't Send your Request"
+                                });
+                            }
+                        }
+
+                    });
+                }
             });
         });
     </script>

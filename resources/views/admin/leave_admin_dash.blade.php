@@ -55,11 +55,13 @@
                                     <td scope='col'>{{ $record['description'] }}</td>
                                     <td scope='col'>
                                         <select class="status" name="status" id="status" data-id="{{ $record['id'] }}"
-                                            {{ $record['status'] == 1 ? 'disabled' : '' }}> 
+                                            data-user="{{ $record['user_id'] }}"
+                                            {{ $record['status'] == 1 ? 'disabled' : '' }}>
                                             <option {{ is_null($record['status']) ? 'selected' : '' }} value="">
                                                 Pending
                                             </option>
-                                            <option {{ $record['status'] == '1' ? 'selected' : '' }} value="1">Approved
+                                            <option {{ $record['status'] == '1' ? 'selected' : '' }} value="1">
+                                                Approved
                                             </option>
                                             <option {{ $record['status'] == '0' ? 'selected' : '' }} value="0">
                                                 Rejected
@@ -95,6 +97,8 @@
 
             $('.status').change(function() {
                 let id = $(this).data('id');
+                let user_id = $(this).data('user');
+                console.log(user_id);
                 let val = $(this).val();
                 if (val == '1') {
                     $(this).attr('disabled', '')
@@ -107,10 +111,37 @@
                     data: {
                         id: id,
                         val: val,
+                        user_id: user_id,
                         reason: reason
                     },
                     success: function(res) {
-                        console.log(res)
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        if (res['value'] == 1) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Leave Request Approved"
+                            });
+                        } else if (res['value'] == 0) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Leave Request Rejected"
+                            });
+                        } else if (res['value'] == null) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Leave Request is Still Pending"
+                            });
+                        }
                     }
                 });
             });

@@ -11,10 +11,10 @@ Route::post('/register',[showController::class,'registerControl'])->name('regist
 Route::get('/login',[showController::class,'logInView'])->name('login');
 Route::post('/login',[showController::class,'logInAuth'])->name('login.url');
 Route::get('/logout',[showController::class,'logOut'])->name('logut');
-Route::get('/forget_password',[showController::class,'ForgetPasswordView'])->name('forgotPassword');
-Route::post('/forget_password',[showController::class,'ForgetPasswordControl'])->name('forgot.password');
-Route::get('/reset_password/{token}/{email}',[showController::class,'resetPasswordView'])->name('reset.password');
-Route::post('/reset_password',[showController::class,'resetPasswordControl'])->name('reset.password.post');
+Route::get('/forget-password',[showController::class,'ForgetPasswordView'])->name('forgotPassword');
+Route::post('/forget-password',[showController::class,'ForgetPasswordControl'])->name('forgot.password');
+Route::get('/reset-password/{token}/{email}',[showController::class,'resetPasswordView'])->name('reset.password');
+Route::post('/reset-password',[showController::class,'resetPasswordControl'])->name('reset.password.post');
 Route::post('/delete/{id}',[showController::class,'deleteData'])->name('remove.data');
 Route::get('/edit/{id}',[showController::class,'getData'])->name('edit.data');
 Route::post('/status',[showController::class,'statusChange'])->name('update.status');
@@ -24,3 +24,5 @@ Route::post('/emloyees-leaves',[leaveControlls::class,'leaveEmpControll'])->name
 Route::get('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveView'])->name('admin.leave.dashboard');
 Route::post('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveControll'])->name('admin.leave.controll');
 Route::post('/select',[leaveControlls::class,'memberLeaveCount'])->name('select.val');
+Route::get('/admin-holidays-list',[leaveControlls::class,'holidayView'])->name('admin.holiday.view');
+Route::post('/admin-holidays-list',[leaveControlls::class,'holidayControll'])->name('admin.holiday.controll');
