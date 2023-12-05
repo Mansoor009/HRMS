@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\bankHolidayModel;
 use App\Models\leaveCountModel;
 use App\Models\leaveRecordModel;
 use Illuminate\Http\Request;
@@ -55,14 +56,19 @@ class leaveControlls extends Controller
             $tdate = $request->to;
             $start = Carbon::parse($fdate);
             $end =  Carbon::parse($tdate);
-
+            $holidayCount = bankHolidayModel::whereBetween('date', [$start, $end])
+                ->where('status', 1)
+                ->count();
             while ($start <= $end) {
                 if ($start->format('N') < 7) {
                     $days++;
                 }
                 $start->add($collect);
             }
-            if ($days <= $balance) {
+
+            $total = $days - $holidayCount;
+            
+            if ($total <= $balance) {
                 $leave_record = leaveRecordModel::create([
                     'user_id' => $userId,
                     'title' => $request->title,
@@ -70,7 +76,7 @@ class leaveControlls extends Controller
                     'to_leave' => $request->to,
                     'description' => $request->desc,
                     'leave_type' => $request->select,
-                    'no_of_days' => $days
+                    'no_of_days' => $total
                 ]);
                 return response(['status' => true, 'data' => $leave_record]);
             } else {
@@ -101,9 +107,9 @@ class leaveControlls extends Controller
         }
 
         if ($request->val == 1) {
-            $fetch = leaveRecordModel::select('leave_type', 'no_of_days')->where('id', $request->id)->get();
-            $leave_type = $fetch->pluck('leave_type')->first();
-            $no_of_days = $fetch->pluck('no_of_days')->first();
+            $fetch = leaveRecordModel::select('leave_type', 'no_of_days')->where('id', $request->id)->first();
+            $leave_type = $fetch->leave_type;
+            $no_of_days = $fetch->no_of_days;
 
             switch ($leave_type) {
                 case SICK_LEAVE:
@@ -129,11 +135,50 @@ class leaveControlls extends Controller
         return response(['account' => $account]);
     }
 
-    public function holidayView(){
-        return view('admin.holidays_list');
+    public function holidayView()
+    {
+        $list = bankHolidayModel::all();
+        return view('admin.holidays_list', ['list' => $list]);
     }
 
-    public function holidayControll(Request $request){
-         
+    public function holidayControll(Request $request)
+    {
+        if ($request->id) {
+            $update = bankHolidayModel::find($request->id);
+            if (!$update) {
+                abort(404);
+            } else {
+                $update->update([
+                    'title' => $request->title,
+                    'date' => $request->date,
+                ]);
+            }
+            response(['status' => true]);
+        } else {
+            $insert = bankHolidayModel::create([
+                'title' => $request->title,
+                'date' => $request->date,
+                'status' => 1
+            ]);
+            return response(['data' => $insert]);
+        }
+    }
+    public function holidayStatus(Request $request)
+    {
+        if (!$request->id) {
+            return response(['status' => false, 'message' => 'Id has not Been Sent']);
+        } else {
+            $status = bankHolidayModel::where('id', $request->id)->update(['status' => $request->val]);
+            return response(['val' => $request->val]);
+        }
+    }
+    public function holidayEdit($id)
+    {
+        if (!$id) {
+            return response(['status' => false]);
+        } else {
+            $update = bankHolidayModel::where('id', $id)->get();
+            return response(['update' => $update]);
+        }
     }
 }

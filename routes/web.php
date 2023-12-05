@@ -26,3 +26,5 @@ Route::post('/admin-leave-dasboard',[leaveControlls::class,'adminLeaveControll']
 Route::post('/select',[leaveControlls::class,'memberLeaveCount'])->name('select.val');
 Route::get('/admin-holidays-list',[leaveControlls::class,'holidayView'])->name('admin.holiday.view');
 Route::post('/admin-holidays-list',[leaveControlls::class,'holidayControll'])->name('admin.holiday.controll');
+Route::post('/admin-holidays-status',[leaveControlls::class,'holidayStatus'])->name('admin.holiday.status');
+Route::get('/admin-holidays-edit/{id}',[leaveControlls::class,'holidayEdit'])->name('admin.holiday.edit');

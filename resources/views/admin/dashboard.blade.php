@@ -1,5 +1,5 @@
 @extends('layouts.master_layout')
-@section('title','Admin Dashboard')
+@section('title', 'Admin Dashboard')
 @section('section')
     <table class="table table-striped table-bordered table-responsive">
         <thead>
@@ -48,17 +48,14 @@
                         <div class="form-group">
                             <input class="form-control" placeholder="Update Username " type="text" id="user_name"
                                 name="user_name">
-                            <span class="user_name_error error"></span>
                         </div>
                         <div class="form-group">
                             <input class="form-control" placeholder="Update Email" type="email" id="email"
                                 name="email">
-                            <span class="email_error error"></span>
                         </div>
                         <div class="form-group">
                             <input class="form-control" placeholder="Update Mobile Number" type="text" id="mobile_number"
                                 name="mobile_number">
-                            <span class="mobile_number_error error"></span>
                         </div>
                         <input type="hidden" name="user_id" id="user_id">
                         <button class="btn btn-primary btn-block upBtn">Update User Data</button>
@@ -117,7 +114,6 @@
                         response = res.data[0];
                         $("#user_name").val(response.user_name);
                         $("#email").val(response.email);
-                        $("#password").val(response.password);
                         $("#mobile_number").val(response.mobile_number);
                         $("#user_id").val(response.id);
                         $('#exampleModal').modal('show');
@@ -135,10 +131,11 @@
                         required: true,
                         email: true,
                     },
-                    password: {
-                        required: true,
-                        minlength: 5
-                    },
+                    mobile_number: {
+                        digits: 10,
+                        minlength: 10,
+                        maxlength: 10
+                    }
                 },
                 submitHandler: function() {
                     let data = $("#submitForm").serialize();
@@ -169,7 +166,7 @@
                                 // console.log(message[0]);
                             });
                         },
-                        complete:function(){
+                        complete: function() {
                             $('.upBtn').html('Update User Data')
                         }
                     });
