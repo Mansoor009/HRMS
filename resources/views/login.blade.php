@@ -60,6 +60,7 @@
                             <h2>Welcome back!</h2>
                             <h4>Please Log In to continue</h4>
                             <form id="loginForm">
+                                @csrf
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Enter your Email" type="text"
                                         id="email" name="email">
@@ -155,7 +156,8 @@
                             }, 500);
 
 
-                        } else if (res.status == "member") {
+                        }
+                        else if (res.status == "member") {
                             Swal.fire({
                                 icon: "success",
                                 title: "Member logged in successfully",
@@ -163,7 +165,7 @@
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('member.dashboard') }}';
-                            }, 500);
+                            }, 5000);
 
                         }
 

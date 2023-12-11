@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class showController extends Controller
 {
@@ -194,7 +195,8 @@ class showController extends Controller
             if ($user->status == 0) {
                 return response(['message' => 'Your Account Is De-Activated', 'status' => 'denied']);
             } else if ($user->role == 'member' && $user->status == 1) {
-                return response(['message' => 'Member Succesfully Logging in', 'status' => 'member']);
+                $token = JWTAuth::fromUser($user);
+                return response(['message' => 'Member Succesfully Logging in', 'status' => 'member','token' => $token]);
             } else if ($user->role == 'admin' && $user->status == 1) {
                 return response(['message' => 'Admin Succesfully Logging in', 'status' => 'admin',]);
             }
@@ -206,6 +208,7 @@ class showController extends Controller
     //logout code
     public function logOut(Session $session)
     {
+        // JWTAuth::parseToken()->invalidate(true);
         $session->flush();
         Auth::logout();
         return redirect(route('login'));
