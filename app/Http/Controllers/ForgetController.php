@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attendance;
-use App\Models\leaveCountModel;
 use App\Models\ResetPassword;
 use App\Models\User;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 class ForgetController extends Controller
 {
@@ -71,8 +65,6 @@ class ForgetController extends Controller
         if (!$reset) {
             return response(['message' => 'Invalid', 'status' => false]);
         }
-        // DB::table('users')
-        //     ->update(['password' => Hash::make($request->password)]);
         User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
 

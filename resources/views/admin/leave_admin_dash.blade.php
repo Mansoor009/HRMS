@@ -98,11 +98,10 @@
             $('.status').change(function() {
                 let id = $(this).data('id');
                 let user_id = $(this).data('user');
-                console.log(user_id);
                 let val = $(this).val();
                 if (val == '1') {
-                    $(this).attr('disabled', '')
-                } else {
+                    $(this).attr('readonly', '')
+                } else if(val == '0'){
                     var reason = prompt('Rejection Reason')
                 }
                 $.ajax({
@@ -126,12 +125,12 @@
                                 toast.onmouseleave = Swal.resumeTimer;
                             }
                         });
-                        if (res['value'] == 1) {
+                        if (res['value'] == '1') {
                             Toast.fire({
                                 icon: "success",
                                 title: "Leave Request Approved"
                             });
-                        } else if (res['value'] == 0) {
+                        } else if (res['value'] == '0') {
                             Toast.fire({
                                 icon: "success",
                                 title: "Leave Request Rejected"
