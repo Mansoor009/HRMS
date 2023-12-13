@@ -1,19 +1,24 @@
 <?php
 
-
+use App\Http\Controllers\ForgetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\showController;
 use App\Http\Controllers\leaveControlls;
 
-Route::get('/register', [showController::class, 'registerView'])->name('register');
-Route::post('/register', [showController::class, 'registerControl'])->name('register.url');
-Route::get('/login', [showController::class, 'logInView'])->name('login');
-Route::post('/login', [showController::class, 'logInAuth'])->name('login.url');
-Route::get('/logout', [showController::class, 'logOut'])->name('logut');
-Route::get('/forget-password', [showController::class, 'ForgetPasswordView'])->name('forgotPassword');
-Route::post('/forget-password', [showController::class, 'ForgetPasswordControl'])->name('forgot.password');
-Route::get('/reset-password/{token}/{email}', [showController::class, 'resetPasswordView'])->name('reset.password');
-Route::post('/reset-password', [showController::class, 'resetPasswordControl'])->name('reset.password.post');
+Route::controller(showController::class)->group(function () {
+    Route::get('/register', 'registerView')->name('register');
+    Route::post('/register', 'registerControl')->name('register.url');
+    Route::get('/login', 'logInView')->name('login');
+    Route::post('/login', 'logInAuth')->name('login.url');
+    Route::get('/logout', 'logOut')->name('logut');
+});
+
+Route::controller(ForgetController::class)->group(function(){
+    Route::get('/forget-password', 'ForgetPasswordView')->name('forgotPassword');
+    Route::post('/forget-password', 'ForgetPasswordControl')->name('forgot.password');
+    Route::get('/reset-password/{token}/{email}','resetPasswordView')->name('reset.password');
+    Route::post('/reset-password','resetPasswordControl')->name('reset.password.post');
+});
 
 
 Route::middleware('auth')->group(function () {
@@ -29,7 +34,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin-holidays-status', [leaveControlls::class, 'holidayStatus'])->name('admin.holiday.status');
         Route::get('/admin-holidays-edit/{id}', [leaveControlls::class, 'holidayEdit'])->name('admin.holiday.edit');
     });
-
     Route::middleware('member.role')->group(function () {
         Route::get('/member', [showController::class, 'showMemberData'])->name('member.dashboard');
         Route::post('/punchStatus', [showController::class, 'punchStatus'])->name('punch.status');

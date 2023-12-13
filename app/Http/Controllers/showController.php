@@ -214,67 +214,6 @@ class showController extends Controller
         return redirect(route('login'));
     }
 
-    //Forgot password view
-    public function ForgetPasswordView()
-    {
-        return view('forget_password');
-    }
-    //Forgot password backend
-    public function ForgetPasswordControl(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|exists:users'
-        ]);
-
-        $token = Str::random(30);
-
-        ResetPassword::create([
-            'email' => $request->email,
-            'token' => $token
-        ]);
-
-        $response  = Mail::send(
-            'email.forget_password',
-            [
-                'token' => $token,
-                'email' => $request->email
-            ],
-            function ($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('Reset Password');
-            }
-        );
-
-        return response(['Message' => 'Email Sent', 'status' => true]);
-        // return  redirect()->to(route('forgotPassword'))->with(['success' => 'Email Send']);
-    }
-
-    public function resetPasswordView($token, $email)
-    {
-        return view('new_password', ['token' => $token, 'email' => $email]);
-    }
-
-    public function resetPasswordControl(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|exists:users',
-            'password' => 'required|confirmed|string|min:6',
-            'password_confirmation' => 'required'
-        ]);
-
-        $reset = ResetPassword::where('token', $request->token)->get();
-
-        if (!$reset) {
-            return response(['message' => 'Invalid', 'status' => false]);
-        }
-        // DB::table('users')
-        //     ->update(['password' => Hash::make($request->password)]);
-        User::where('email', $request->email)
-            ->update(['password' => Hash::make($request->password)]);
-
-        return response(['message' => 'Password Changed', 'status' => true]);
-    }
-
     public function deleteData($id)
     {
         if (!$id) {
@@ -284,6 +223,7 @@ class showController extends Controller
             return response(['id' => $id, 'status' => 'Data Removed Succesfully.']);
         }
     }
+
     public function getData($id)
     {
         if (!$id) {
@@ -303,6 +243,7 @@ class showController extends Controller
             return response(['status' => $request->status, 'message' => $request->status == 1 ? 'Activated Succesfully' : 'De-Activated Succesfully']);
         }
     }
+    
     public function punchStatus(Request $request)
     {
         $userId = Auth::id();

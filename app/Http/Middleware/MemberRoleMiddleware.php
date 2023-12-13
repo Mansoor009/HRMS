@@ -19,6 +19,9 @@ class MemberRoleMiddleware
         if(Auth::user()->role == 'member'){
             return $next($request);
         }
+        else{
+            return route('login');
+        }
 
     }
 }
