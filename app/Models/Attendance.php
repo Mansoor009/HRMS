@@ -14,6 +14,11 @@ class Attendance extends Model
         'punch_status',
     ];
 
+    public function user()
+    {
+      return $this->belongsTo(User::class);
+    }
+
     // public $timestamps = false;
 
     protected $casts = [

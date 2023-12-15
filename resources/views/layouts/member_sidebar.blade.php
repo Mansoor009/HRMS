@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+@endphp
 <!-- main-sidebar -->
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
 <div class="sticky">
@@ -16,7 +19,10 @@
                         <img src="assets/img/faces/6.jpg" alt="user-img" class="rounded-circle mCS_img_loaded">
                     </div>
                     <div class="user-info">
-                        <h6 class=" mb-0 text-dark"></h6>
+                        <h6 class=" mb-0 text-dark">@php
+                            $adName = Auth::user();
+                            echo $adName->user_name;
+                        @endphp</h6>
                         <span class="text-muted app-sidebar__user-name text-sm">Member</span>
                     </div>
                 </div>

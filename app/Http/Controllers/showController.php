@@ -240,7 +240,7 @@ class showController extends Controller
             return response(['status' => $request->status, 'message' => $request->status == 1 ? 'Activated Succesfully' : 'De-Activated Succesfully']);
         }
     }
-    
+
     public function punchStatus(Request $request)
     {
         $userId = Auth::id();

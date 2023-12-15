@@ -99,6 +99,11 @@
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         let eyePass = document.querySelector('.fe-eye');
         let inputPass = document.querySelector('#password')
         eyePass.addEventListener('click', function() {
@@ -113,11 +118,7 @@
             }
 
         })
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+
         $("#loginForm").validate({
             rules: {
                 email: "required",
@@ -165,7 +166,7 @@
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('member.dashboard') }}';
-                            }, 5000);
+                            }, 500);
 
                         }
 

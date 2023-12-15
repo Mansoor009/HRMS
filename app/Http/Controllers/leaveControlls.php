@@ -1,5 +1,5 @@
 <?php
-
+// SELECT u.user_name, DATE(a.created_at) AS punch_date, MIN(a.created_at) AS first_punch,a.punch_status FROM attendances a INNER JOIN users u ON a.user_id = u.id WHERE a.punch_status = 1 GROUP BY a.user_id, DATE(a.created_at);
 namespace App\Http\Controllers;
 
 use App\Models\bankHolidayModel;
@@ -11,15 +11,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DateInterval;
+use App\Models\Attendance;
+use App\Models\User;
 
 class leaveControlls extends Controller
 {
+    protected function attendance()
+    {
+        $results = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'), DB::raw('MIN(attendances.created_at) as first_punch'), 'attendances.punch_status')
+    ->join('users', 'attendances.user_id', '=', 'users.id')
+    ->where('attendances.punch_status', 1)
+    ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
+    ->get();
+    }
     public function leaveEmpView()
     {
         $userId = Auth::id();
         $leave_count = leaveCountModel::where('user_id', $userId)->get();
         $leave_record = leaveRecordModel::where('user_id', $userId)->get();
         // dd($leave_count);
+
+        $results = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'), DB::raw('MIN(attendances.created_at) as first_punch'), 'attendances.punch_status')
+    ->join('users', 'attendances.user_id', '=', 'users.id')
+    ->where('attendances.punch_status', 1)
+    ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
+    ->get();
+        return [$results];
         return view('member.leave_dash', [
             'leave_count' => $leave_count,
             'sick' => SICK_LEAVE,
@@ -67,7 +84,7 @@ class leaveControlls extends Controller
             }
 
             $total = $days - $holidayCount;
-            
+
             if ($total <= $balance) {
                 $leave_record = leaveRecordModel::create([
                     'user_id' => $userId,
