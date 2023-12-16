@@ -14,6 +14,11 @@
     <title>Laravel - @yield('title', 'website')</title>
 
 </head>
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
 @stack('style')
 
 <body class="main-body app sidebar-mini ltr">

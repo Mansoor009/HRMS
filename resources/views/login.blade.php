@@ -104,20 +104,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        let eyePass = document.querySelector('.fe-eye');
-        let inputPass = document.querySelector('#password')
-        eyePass.addEventListener('click', function() {
-            if (this.classList.contains('fe-eye')) {
-                this.classList.remove('fe-eye');
-                this.classList.add('fe-eye-off');
-                inputPass.type = 'text'
-            } else {
-                this.classList.add('fe-eye');
-                this.classList.remove('fe-eye-off');
-                inputPass.type = 'password'
-            }
-
-        })
 
         $("#loginForm").validate({
             rules: {
@@ -150,7 +136,7 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Admin logged in successfully",
-                                showCloseButton: false,
+                                text:"Please Remember to Logout Once Work is Done!"
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('admin.dashboard') }}';
@@ -162,7 +148,7 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Member logged in successfully",
-                                showCloseButton: false,
+                                text:"Please Remember to Logout Once Work is Done!",
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('member.dashboard') }}';
@@ -172,7 +158,6 @@
 
                     },
                     error: function(xhr) {
-                        console.log(xhr);
                         $.each(xhr.responseJSON.errors, function(index, message) {
                             $(`.${index}_error`).text(message[0]).css('color', 'red');
                         });
@@ -186,6 +171,21 @@
                     }
                 });
             }
+        });
+
+        let eyePass = document.querySelector('.fe-eye');
+        let inputPass = document.querySelector('#password')
+        eyePass.addEventListener('click', function() {
+            if (this.classList.contains('fe-eye')) {
+                this.classList.remove('fe-eye');
+                this.classList.add('fe-eye-off');
+                inputPass.type = 'text'
+            } else {
+                this.classList.add('fe-eye');
+                this.classList.remove('fe-eye-off');
+                inputPass.type = 'password'
+            }
+
         });
     </script>
 </body>

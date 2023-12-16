@@ -16,13 +16,37 @@ use App\Models\User;
 
 class leaveControlls extends Controller
 {
-    protected function attendance()
+    public function attendance($month)
     {
-        $results = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'), DB::raw('MIN(attendances.created_at) as first_punch'), 'attendances.punch_status')
-    ->join('users', 'attendances.user_id', '=', 'users.id')
-    ->where('attendances.punch_status', 1)
-    ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
-    ->get();
+        // $firstPunch = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'),DB::raw('MIN(attendances.created_at) AS first_punch'))
+        // ->join('users', 'attendances.user_id', '=', 'users.id')
+        // ->where('attendances.punch_status', 1)
+        // ->whereMonth('attendances.created_at', '=', $month) // Replace '12' with the desired month
+        // ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
+        // ->get();
+
+        // $lastPunch = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'),DB::raw('MAX(attendances.created_at) AS last_punch'))
+        // ->join('users', 'attendances.user_id', '=', 'users.id')
+        // ->where('attendances.punch_status', 0)
+        // ->whereMonth('attendances.created_at', '=', $month) // Replace '12' with the desired month
+        // ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
+        // ->get();
+
+        $punchData = Attendance::select(
+            'users.id',
+            'users.user_name',
+            DB::raw('DATE(attendances.created_at) as present_date'),
+            DB::raw('MIN(CASE WHEN attendances.punch_status = 1 THEN attendances.created_at END) AS first_punch'),
+            DB::raw('MAX(CASE WHEN attendances.punch_status = 0 THEN attendances.created_at END) AS last_punch'),
+            DB::raw('TIMEDIFF(MAX(CASE WHEN attendances.punch_status = 0 THEN attendances.created_at END), MIN(CASE WHEN attendances.punch_status = 1 THEN attendances.created_at END)) AS time_difference')
+        )
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->whereMonth('attendances.created_at', '=', $month)
+            ->groupBy('users.id', 'users.user_name', 'present_date')
+            ->get();
+
+        // return ['firstPunch' => $firstPunch, 'lastPunch' => $lastPunch];
+        return $punchData;
     }
     public function leaveEmpView()
     {
@@ -30,13 +54,6 @@ class leaveControlls extends Controller
         $leave_count = leaveCountModel::where('user_id', $userId)->get();
         $leave_record = leaveRecordModel::where('user_id', $userId)->get();
         // dd($leave_count);
-
-        $results = Attendance::select('users.id', 'users.user_name', DB::raw('DATE(attendances.created_at) as punch_date'), DB::raw('MIN(attendances.created_at) as first_punch'), 'attendances.punch_status')
-    ->join('users', 'attendances.user_id', '=', 'users.id')
-    ->where('attendances.punch_status', 1)
-    ->groupBy('users.id', 'users.user_name', 'punch_date', 'attendances.punch_status')
-    ->get();
-        return [$results];
         return view('member.leave_dash', [
             'leave_count' => $leave_count,
             'sick' => SICK_LEAVE,
@@ -197,5 +214,12 @@ class leaveControlls extends Controller
             $update = bankHolidayModel::where('id', $id)->get();
             return response(['update' => $update]);
         }
+    }
+
+    public function empAttendanceList()
+    {
+        $attendance = $this->attendance(11);
+        return $attendance;
+        return view('admin.attendance-list',['attendance' => $attendance]);
     }
 }

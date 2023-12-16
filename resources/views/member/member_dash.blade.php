@@ -254,7 +254,8 @@
                             startTimer()
                             Toast.fire({
                                 icon: "success",
-                                title: "Punched In Successfully"
+                                title: "Punched In Successfully",
+                                text:"Please Remember To Punch Out When you Check Out"
                             });
 
                         } else if (res['punch'] == 0 && res['status'] == true) {

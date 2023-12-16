@@ -1,6 +1,11 @@
 @php
     use Illuminate\Support\Facades\Auth;
 @endphp
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
 <!-- main-sidebar -->
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
 <div class="sticky">

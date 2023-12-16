@@ -1,7 +1,11 @@
 @php
     use Illuminate\Support\Facades\Auth;
 @endphp
-<!-- main-sidebar -->
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
 <div class="sticky">
     <aside class="app-sidebar sidebar-scroll">
@@ -83,7 +87,11 @@
                     <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('admin.holiday.view') }}"><i
                             class="side-menu__icon fe fe-layers "></i><span class="side-menu__label">Holidays</span></a>
                 </li>
-
+                <li class="slide">
+                    <a class="side-menu__item" data-bs-toggle="slide" href="{{ route('admin.attendance.list') }}"><i
+                        class="side-menu__icon fe fe-file"></i><span
+                            class="side-menu__label">Attendance List(Employees)</span></a>
+                </li>
                 <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
                         width="24" height="24" viewBox="0 0 24 24">
                         <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />
