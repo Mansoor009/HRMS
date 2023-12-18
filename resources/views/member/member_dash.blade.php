@@ -183,7 +183,7 @@
                     <table class="table table-striped custom-table mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>User Name</th>
                                 <th>Date </th>
                                 <th>Punch In</th>
                                 <th>Punch Out</th>
@@ -191,13 +191,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($list as $item)
                             <tr>
-                                <td>1</td>
-                                <td>19 Feb 2019</td>
-                                <td>10 AM</td>
-                                <td>7 PM</td>
-                                <td>9 hrs</td>
+                                <td>{{$item['user_name']}}</td>
+                                <td>{{Carbon::parse($item['present_date'])->format('d M Y')}}</td>
+                                <td>{{Carbon::parse($item['first_punch'])->format('h:m A')}}</td>
+                                <td>{{Carbon::parse($item['last_punch'])->format('h:m A')}}</td>
+                                <td>{{$item['time_difference']}}</td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

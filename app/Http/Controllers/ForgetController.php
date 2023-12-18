@@ -25,10 +25,12 @@ class ForgetController extends Controller
         ]);
 
         $token = Str::random(30);
+        $expiration = now()->addMinutes(5);
 
         ResetPassword::create([
             'email' => $request->email,
-            'token' => $token
+            'token' => $token,
+            'token_expires_at' => $expiration,
         ]);
 
         $response  = Mail::send(
@@ -67,6 +69,7 @@ class ForgetController extends Controller
         }
         User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
+
 
         return response(['message' => 'Password Changed', 'status' => true]);
     }

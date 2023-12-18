@@ -103,7 +103,7 @@
                         Swal.fire({
                             icon: "success",
                             title: "Mail Sent",
-                            text: "Please Check Your Email Account.",
+                            text: "Please Check Your Email Account, and You have 5 minutes To Change your password After the Token will expire",
                         });
                     },
                     error: function(error) {

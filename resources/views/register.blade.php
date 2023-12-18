@@ -52,7 +52,6 @@
                             <h2>Welcome</h2>
                             <h4>Please Register with Azira</h4>
                             <form id="submitForm">
-                                @csrf
                                 <div class="form-group">
                                     <input class="form-control " placeholder="Enter your Username " type="text"
                                         id="user_name" name="user_name">

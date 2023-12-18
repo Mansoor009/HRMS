@@ -15,6 +15,28 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class showController extends Controller
 {
+
+    public function attendance($month)
+    {
+        $userId = Auth::id();
+        $punchData = Attendance::select(
+            'users.id',
+            'users.user_name',
+            DB::raw('DATE(attendances.created_at) as present_date'),
+            DB::raw('MIN(CASE WHEN attendances.punch_status = 1 THEN attendances.created_at END) AS first_punch'),
+            DB::raw('MAX(CASE WHEN attendances.punch_status = 0 THEN attendances.created_at END) AS last_punch'),
+            DB::raw('TIMEDIFF(MAX(CASE WHEN attendances.punch_status = 0 THEN attendances.created_at END), MIN(CASE WHEN attendances.punch_status = 1 THEN attendances.created_at END)) AS time_difference')
+        )
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->where('user_id',$userId)
+            ->whereMonth('attendances.created_at', '=', $month)
+            ->groupBy('users.id', 'users.user_name', 'present_date')
+            ->get();
+
+        // return ['firstPunch' => $firstPunch, 'lastPunch' => $lastPunch];
+        return $punchData;
+    }
+
     public function Timer($punch)
     {
         $userId = Auth::id();
@@ -106,8 +128,7 @@ class showController extends Controller
 
             $begin = $this->Timer($punch);
 
-
-
+            $daily = $this->attendance(12);
             return view('member.member_dash', [
                 'users' => $users, 'attendance' => $attendance,
                 'punch' => $punch,
@@ -117,7 +138,7 @@ class showController extends Controller
                 'begin_hours' => $begin->format('H'),
                 'begin_mins' => $begin->format('i'),
                 'begin_seconds' => $begin->format('s'),
-
+                'list' => $daily
             ]);
         }
     }
