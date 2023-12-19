@@ -43,6 +43,7 @@ class leaveControlls extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->whereMonth('attendances.created_at', '=', $month)
             ->groupBy('users.id', 'users.user_name', 'present_date')
+            ->orderBy('attendances.user_id')
             ->get();
 
         // return ['firstPunch' => $firstPunch, 'lastPunch' => $lastPunch];
@@ -218,8 +219,8 @@ class leaveControlls extends Controller
 
     public function empAttendanceList()
     {
-        $attendance = $this->attendance(11);
-        return $attendance;
-        return view('admin.attendance-list',['attendance' => $attendance]);
+        $detail = User::select('id','user_name')->orderBy('id')->get();
+        $attendance = $this->attendance(12);
+        return view('admin.attendance-list',['attendance' => $attendance,'detail' => $detail]);
     }
 }

@@ -33,7 +33,6 @@ class showController extends Controller
             ->groupBy('users.id', 'users.user_name', 'present_date')
             ->get();
 
-        // return ['firstPunch' => $firstPunch, 'lastPunch' => $lastPunch];
         return $punchData;
     }
 

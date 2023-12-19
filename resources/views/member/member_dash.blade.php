@@ -180,11 +180,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="table-responsive">
-                    <table class="table table-striped custom-table mb-0">
+                    <table id="attendanceTable" class="table table-striped custom-table mb-0">
                         <thead>
                             <tr>
                                 <th>User Name</th>
-                                <th>Date </th>
+                                <th>Date</th>
                                 <th>Punch In</th>
                                 <th>Punch Out</th>
                                 <th>Production</th>
@@ -195,8 +195,8 @@
                             <tr>
                                 <td>{{$item['user_name']}}</td>
                                 <td>{{Carbon::parse($item['present_date'])->format('d M Y')}}</td>
-                                <td>{{Carbon::parse($item['first_punch'])->format('h:m A')}}</td>
-                                <td>{{Carbon::parse($item['last_punch'])->format('h:m A')}}</td>
+                                <td>{{Carbon::parse($item['first_punch'])->format('h:i A')}}</td>
+                                <td>{{$item['last_punch'] == null ? '' : Carbon::parse($item['last_punch'])->format('h:i A')}}</td>
                                 <td>{{$item['time_difference']}}</td>
                             </tr>
                             @endforeach
@@ -217,7 +217,6 @@
     <script>
         $(document).ready(function() {
             let timer;
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
