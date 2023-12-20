@@ -219,8 +219,30 @@ class leaveControlls extends Controller
 
     public function empAttendanceList()
     {
-        $detail = User::select('id','user_name')->orderBy('id')->get();
+        $detail = User::select('id', 'user_name')->orderBy('id')->get();
+        $speed = [];
         $attendance = $this->attendance(12);
-        return view('admin.attendance-list',['attendance' => $attendance,'detail' => $detail]);
+        foreach ($attendance as $data) {
+            // Access individual data for each user in the loop
+            $userId = $data->id;
+            $userName = $data->user_name;
+            $presentDate = $data->present_date;
+            $firstPunch = $data->first_punch;
+            $lastPunch = $data->last_punch;
+            $timeDifference = $data->time_difference;
+
+            if ($data->id == 3) {
+                $speed = [
+                    'userId' => $userId,
+                    'userName' => $userName,
+                    'presentDate' => $presentDate,
+                    'firstPunch' => $firstPunch,
+                    'lastPunch' => $lastPunch,
+                    'timeDifference' => $timeDifference,
+                ];
+            }
+        }
+        dd($speed);
+        return view('admin.attendance-list', ['attendance' => $attendance, 'detail' => $detail]);
     }
 }
