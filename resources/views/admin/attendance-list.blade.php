@@ -68,7 +68,7 @@
                                         @php
                                             $make_date = date("Y-m-d", strtotime("2023-11-$i"));
                                             $found_match = false;
-                                            $attendance_for_day = '';
+                                            $attendance_for_day = '-';
                                             foreach ($attend['attendance'] as $att) {
                                                 $att_date = date("Y-m-d", strtotime($att['present_day']));
                                                 if ($att_date == $make_date) {
