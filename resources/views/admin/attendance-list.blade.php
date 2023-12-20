@@ -68,7 +68,7 @@
                                             <th></th>
                                         @endif
                                     @endforeach
-                                </tr>
+                                </tr> 
                             @endforeach
                         </tbody>
                     </table>
