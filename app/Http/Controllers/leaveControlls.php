@@ -221,7 +221,7 @@ class leaveControlls extends Controller
     {
 
         $detail = User::select('id', 'user_name')->orderBy('id')->get();
-        $attendance = $this->attendance(11);
+        $attendance = $this->attendance(12);
         foreach ($detail as $value) {
             $employee['id'] = $value->id;
             $employee['user_name'] = $value->user_name;
@@ -229,6 +229,7 @@ class leaveControlls extends Controller
             foreach ($attendance as $date) {
                 if ($value->id == $date->id) {
                     $attend2['present_day'] = $date->present_date;
+                    $attend2['time_difference'] = strtotime($date->time_difference) - strtotime('00:00:00');
                     $attend[] = $attend2;
                 }
             }
@@ -236,6 +237,6 @@ class leaveControlls extends Controller
             $list[] = $employee;
         }
         // return $list;
-        return view('admin.attendance-list', ['list' => $list, 'detail' => $detail]);
+        return view('admin.attendance-list', ['list' => $list]);
     }
 }

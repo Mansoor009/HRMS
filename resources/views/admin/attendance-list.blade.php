@@ -66,16 +66,21 @@
                                     <td>{{ $attend['user_name'] }}</td>
                                     @for ($i = 1; $i <= $numberOfDays; $i++)
                                         @php
-                                            $make_date = date("Y-m-d", strtotime("2023-11-$i"));
+                                            $make_date = date('Y-m-d', strtotime("2023-12-$i"));
                                             $found_match = false;
                                             $attendance_for_day = '-';
                                             foreach ($attend['attendance'] as $att) {
-                                                $att_date = date("Y-m-d", strtotime($att['present_day']));
+                                                $att_date = date('Y-m-d', strtotime($att['present_day']));
                                                 if ($att_date == $make_date) {
-                                                    $attendance_for_day = 'P';
-                                                    break;
+                                                    if ($att['time_difference'] > 28800) {
+                                                        $attendance_for_day = 'P';
+                                                        break;
+                                                    } else {
+                                                        $attendance_for_day = 'H';
+                                                        break;
+                                                    }
                                                 } else {
-                                                    $attendance_for_day = '-';
+                                                    $attendance_for_day = 'A';
                                                 }
                                             }
                                         @endphp
