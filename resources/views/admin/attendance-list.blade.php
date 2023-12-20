@@ -51,25 +51,44 @@
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Name</th>
-                                @for ($i = 1; $i <= 31; $i++)
-                                    <th >{{ $i }}</th>
+                                @php
+                                    $numberOfDays = cal_days_in_month(CAL_GREGORIAN, 12, 2023);
+                                @endphp
+                                @for ($i = 1; $i <= $numberOfDays; $i++)
+                                    <th data-val = '{{ $i }}'>{{ $i }}</th>
                                 @endfor
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($detail as $item)
+                            @forelse($list as $attend)
                                 <tr>
-                                    <td scope="col">{{ $item->id }}</td>
-                                    <td>{{ $item->user_name }}</td>
-                                    @foreach ($attendance as $list)
-                                        @if ($item->id == $list->user_id)
-                                            <th>{{$list->user_name}}</th>
-                                        @else
-                                            <th></th>
-                                        @endif
-                                    @endforeach
-                                </tr> 
-                            @endforeach
+                                    <td>{{ $attend['id'] }}</td>
+                                    <td>{{ $attend['user_name'] }}</td>
+                                    @for ($i = 1; $i <= $numberOfDays; $i++)
+                                        @php
+                                            $make_date = date("Y-m-d", strtotime("2023-11-$i"));
+                                            $found_match = false;
+                                            $attendance_for_day = '';
+                                            foreach ($attend['attendance'] as $att) {
+                                                $att_date = date("Y-m-d", strtotime($att['present_day']));
+                                                if ($att_date == $make_date) {
+                                                    $attendance_for_day = 'P';
+                                                    break;
+                                                } else {
+                                                    $attendance_for_day = '-';
+                                                }
+                                            }
+                                        @endphp
+                                        <td>
+                                            {{ $attendance_for_day }}
+                                        </td>
+                                    @endfor
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td>No Salesman</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -83,7 +102,5 @@
 @endsection
 
 @push('script')
-    <script>
-
-    </script>
+    <script></script>
 @endpush

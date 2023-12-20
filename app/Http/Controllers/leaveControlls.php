@@ -219,30 +219,23 @@ class leaveControlls extends Controller
 
     public function empAttendanceList()
     {
-        $detail = User::select('id', 'user_name')->orderBy('id')->get();
-        $speed = [];
-        $attendance = $this->attendance(12);
-        foreach ($attendance as $data) {
-            // Access individual data for each user in the loop
-            $userId = $data->id;
-            $userName = $data->user_name;
-            $presentDate = $data->present_date;
-            $firstPunch = $data->first_punch;
-            $lastPunch = $data->last_punch;
-            $timeDifference = $data->time_difference;
 
-            if ($data->id == 3) {
-                $speed = [
-                    'userId' => $userId,
-                    'userName' => $userName,
-                    'presentDate' => $presentDate,
-                    'firstPunch' => $firstPunch,
-                    'lastPunch' => $lastPunch,
-                    'timeDifference' => $timeDifference,
-                ];
+        $detail = User::select('id', 'user_name')->orderBy('id')->get();
+        $attendance = $this->attendance(11);
+        foreach ($detail as $value) {
+            $employee['id'] = $value->id;
+            $employee['user_name'] = $value->user_name;
+            $attend = [];
+            foreach ($attendance as $date) {
+                if ($value->id == $date->id) {
+                    $attend2['present_day'] = $date->present_date;
+                    $attend[] = $attend2;
+                }
             }
+            $employee['attendance'] = $attend;
+            $list[] = $employee;
         }
-        dd($speed);
-        return view('admin.attendance-list', ['attendance' => $attendance, 'detail' => $detail]);
+        // return $list;
+        return view('admin.attendance-list', ['list' => $list, 'detail' => $detail]);
     }
 }
