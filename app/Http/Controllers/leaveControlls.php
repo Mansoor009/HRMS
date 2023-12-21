@@ -6,7 +6,6 @@ use App\Models\bankHolidayModel;
 use App\Models\leaveCountModel;
 use App\Models\leaveRecordModel;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;

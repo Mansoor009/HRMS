@@ -253,6 +253,7 @@
                         });
                         if (res['punch'] == 1 && res['status'] == true) {
                             startTimer()
+
                             Toast.fire({
                                 icon: "success",
                                 title: "Punched In Successfully",

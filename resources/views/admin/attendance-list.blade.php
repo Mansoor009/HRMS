@@ -9,6 +9,10 @@
         table {
             background-color: white;
         }
+
+        .fa-xmark:before {
+            content: "\f00d";
+        }
     </style>
 @endpush
 
@@ -67,25 +71,25 @@
                                     @for ($i = 1; $i <= $numberOfDays; $i++)
                                         @php
                                             $make_date = date('Y-m-d', strtotime("2023-12-$i"));
-                                            $found_match = false;
                                             $attendance_for_day = '-';
                                             foreach ($attend['attendance'] as $att) {
                                                 $att_date = date('Y-m-d', strtotime($att['present_day']));
                                                 if ($att_date == $make_date) {
                                                     if ($att['time_difference'] > 28800) {
-                                                        $attendance_for_day = 'P';
+                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;"></i>';
                                                         break;
                                                     } else {
-                                                        $attendance_for_day = 'H';
+                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;"></i> <i class="fa fa-regular fa-xmark" style="color: #ff0000;"></i>';
                                                         break;
                                                     }
                                                 } else {
-                                                    $attendance_for_day = 'A';
+                                                    $attendance_for_day = '<i class="fa fa-regular fa-xmark" style="color: #ff0000;"></i>';
                                                 }
                                             }
+
                                         @endphp
                                         <td>
-                                            {{ $attendance_for_day }}
+                                            {!! $attendance_for_day !!}
                                         </td>
                                     @endfor
                                 </tr>
