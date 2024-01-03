@@ -127,7 +127,7 @@ class showController extends Controller
 
             $begin = $this->Timer($punch);
 
-            $daily = $this->attendance(12);
+            $daily = $this->attendance(1);
             return view('member.member_dash', [
                 'users' => $users, 'attendance' => $attendance,
                 'punch' => $punch,

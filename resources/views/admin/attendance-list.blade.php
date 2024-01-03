@@ -31,7 +31,7 @@
                                 <th scope="col">ID</th>
                                 <th scope="col">Name</th>
                                 @php
-                                    $numberOfDays = cal_days_in_month(CAL_GREGORIAN, 12, 2023);
+                                    $numberOfDays = cal_days_in_month(CAL_GREGORIAN, 1, 2024);
                                 @endphp
                                 @for ($i = 1; $i <= $numberOfDays; $i++)
                                     <th data-val = '{{ $i }}'>{{ $i }}</th>
@@ -45,7 +45,7 @@
                                     <td>{{ $attend['user_name'] }}</td>
                                     @for ($i = 1; $i <= $numberOfDays; $i++)
                                         @php
-                                            $make_date = date('Y-m-d', strtotime("2023-12-$i"));
+                                            $make_date = date('Y-m-d', strtotime("2024-1-$i"));
                                             $attendance_for_day = '-';
                                             foreach ($attend['attendance'] as $att) {
                                                 $att_date = date('Y-m-d', strtotime($att['present_day']));
