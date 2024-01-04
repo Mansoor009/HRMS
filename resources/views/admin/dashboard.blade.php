@@ -1,41 +1,59 @@
 @extends('layouts.master_layout')
 @section('title', 'Admin Dashboard')
+@push('style')
+    <style>
+        .emp-header{
+            color: white;
+            margin: 20px 0;
+        }
+    </style>
+@endpush
 @section('section')
-    <table class="table table-striped table-bordered table-responsive">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Username</th>
-                <th scope="col">Email</th>
-                <th scope="col">Mobile Number</th>
-                <th scope="col">Password</th>
-                <th scope="col">Update</th>
-                <th scope="col">Delete</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($users as $user)
-                <tr>
-                    <th scope="row">{{ $user['id'] }}</th>
-                    <td>{{ $user['user_name'] }}</td>
-                    <td>{{ $user['email'] }}</td>
-                    <td>{{ $user['mobile_number'] }}</td>
-                    <td>{{ $user['password'] }}</td>
-                    <td><button type="button" class="btn btn-success editBtn" data-id='{{ $user['id'] }}'>Edit</button>
-                    </td>
-                    <td><button type="button" class="btn btn-danger remBtn" data-id='{{ $user['id'] }}'>Delete</button>
-                    </td>
-                    <td>
-                        <select class="status" data-id='{{ $user['id'] }}'>
-                            <option value="1" {{ $user['status'] == 1 ? 'selected' : '' }}>Activate</option>
-                            <option value="0" {{ $user['status'] == 0 ? 'selected' : '' }}>De-Activate</option>
-                        </select>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="emp-admin-wrapper">
+        <div class="container">
+            <div class="emp-header">
+                <h3>Member</h3>
+                <h6>Dashboard / Employee</h6>
+            </div>
+            <div class="emp-cover">
+                <table class="table table-striped table-bordered table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Mobile Number</th>
+                            <th scope="col">Password</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $user)
+                            <tr>
+                                <th scope="row">{{ $user['id'] }}</th>
+                                <td>{{ $user['user_name'] }}</td>
+                                <td>{{ $user['email'] }}</td>
+                                <td>{{ $user['mobile_number'] }}</td>
+                                <td>{{ $user['password'] }}</td>
+                                <td><button type="button" class="btn btn-success editBtn" data-id='{{ $user['id'] }}'>Edit</button>
+                                </td>
+                                <td><button type="button" class="btn btn-danger remBtn" data-id='{{ $user['id'] }}'>Delete</button>
+                                </td>
+                                <td>
+                                    <select class="status" data-id='{{ $user['id'] }}'>
+                                        <option value="1" {{ $user['status'] == 1 ? 'selected' : '' }}>Activate</option>
+                                        <option value="0" {{ $user['status'] == 0 ? 'selected' : '' }}>De-Activate</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

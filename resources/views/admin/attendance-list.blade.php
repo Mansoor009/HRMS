@@ -13,6 +13,14 @@
         .fa-xmark:before {
             content: "\f00d";
         }
+
+        .fa-check:before {
+            cursor: pointer;
+        }
+        .header {
+            color: white;
+            margin: 20px 0;
+        }
     </style>
 @endpush
 
@@ -20,13 +28,13 @@
     <section class="attendance-list-wrapper">
         <div class="container">
             <div class="header">
-
+                <h3>Attendance</h3>
+                <h6>Dashboard / Attendance</h6>
             </div>
             <div class="row">
                 <div class="col-lg-12">
                     <table class="table table-striped table-bordered table-responsive">
                         <thead>
-
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Name</th>
@@ -51,17 +59,16 @@
                                                 $att_date = date('Y-m-d', strtotime($att['present_day']));
                                                 if ($att_date == $make_date) {
                                                     if ($att['time_difference'] > 28800) {
-                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;"></i>';
+                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;" data-id=' . $attend['id'] . ' data-val = ' . $make_date . '></i>';
                                                         break;
                                                     } else {
-                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;"></i> <i class="fa fa-regular fa-xmark" style="color: #ff0000;"></i>';
+                                                        $attendance_for_day = '<i class="fa fa-regular fa-check" style="color: #21ba33;" data-id=' . $attend['id'] . ' data-val = ' . $make_date . '></i> <i class="fa fa-regular fa-xmark" style="color: #ff0000;"></i>';
                                                         break;
                                                     }
                                                 } else {
                                                     $attendance_for_day = '<i class="fa fa-regular fa-xmark" style="color: #ff0000;"></i>';
                                                 }
                                             }
-
                                         @endphp
                                         <td>
                                             {!! $attendance_for_day !!}
@@ -86,5 +93,20 @@
 @endsection
 
 @push('script')
-    <script></script>
+    <script>
+        $('.fa-check').click(function(e) {
+            let id = $(this).data('id');
+            let date = $(this).data('val');
+            $.ajax({
+                type: "get",
+                url: '{{ route('emp.duration', '') }}' + "/" + id,
+                data: {
+                    date: date,
+                },
+                success: function(response) {
+                    console.log(response);
+                }
+            });
+        });
+    </script>
 @endpush

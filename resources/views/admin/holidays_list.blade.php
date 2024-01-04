@@ -5,6 +5,11 @@
         .holiday-cover table {
             background-color: white;
         }
+
+        .header-holiday {
+            color: white;
+            margin: 20px 0;
+        }
     </style>
 @endpush
 
@@ -12,6 +17,10 @@
     <div class="holiday-table-wrapper">
         <div class="container">
             <div class="holiday-cover">
+                <div class="header-holiday">
+                    <h3>Holidays 2024</h3>
+                    <h6>Dashboard / Holidays</h6>
+                </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <table class="table table-striped table-bordered table-lg-responsive">

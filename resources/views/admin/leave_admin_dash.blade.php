@@ -4,6 +4,7 @@
     <style>
         .admin-leave-head {
             color: white;
+            margin: 20px 0;
         }
 
         .table-cover table {
@@ -23,8 +24,8 @@
 @section('section')
     <div class="content container-fluid">
         <div class="admin-leave-head">
-            <h2>Leave History & Status</h2>
-            <h5>Dashboard / Leave</h5>
+            <h3>Leave History & Status</h3>
+            <h6>Dashboard / Leave</h6>
         </div>
         <div class="table-cover">
             <div class="row">

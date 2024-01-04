@@ -238,4 +238,16 @@ class leaveControlls extends Controller
         // return $list;
         return view('admin.attendance-list', ['list' => $list]);
     }
+
+    public function showTime(Request $request, $id)
+    {
+        $duration = Attendance::select(
+            'user_id',
+            DB::raw('TIMEDIFF(MAX(CASE WHEN punch_status = 0 THEN created_at END), MIN(CASE WHEN punch_status = 1 THEN created_at END)) AS time_difference')
+        )->where('user_id', $id)
+            ->whereDate('created_at', $request->date)
+            ->groupBy('user_id')
+            ->first();
+        return $duration;
+    }
 }

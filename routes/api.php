@@ -20,7 +20,7 @@ use App\Http\Controllers\leaveControlls;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => 'api'],function(){
+Route::group(['api'],function(){
     Route::post('/login', [showController::class, 'logInAuth'])->name('login.url');
 });
 
