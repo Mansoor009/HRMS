@@ -6,6 +6,17 @@
             color: white;
             margin: 20px 0;
         }
+       
+        .table {
+            background-color: white;
+        }
+
+        .status {
+            border-radius: 4px;
+            padding: 5px;
+            background-color: #0d6efd;
+            color: white;
+        }
     </style>
 @endpush
 @section('section')
@@ -219,17 +230,4 @@
         });
     </script>
 @endpush
-@push('style')
-    <style>
-        .table {
-            background-color: white;
-        }
 
-        .status {
-            border-radius: 4px;
-            padding: 5px;
-            background-color: #0d6efd;
-            color: white;
-        }
-    </style>
-@endpush
