@@ -32321,7 +32321,7 @@ a.tag-addon:hover {
 .main-content:after {
     content: "";
     height: 220px;
-    background: linear-gradient(45deg, #f33057, var(--primary-bg-color));
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 42%);
     position: absolute;
     z-index: -1;
     width: 100%;
