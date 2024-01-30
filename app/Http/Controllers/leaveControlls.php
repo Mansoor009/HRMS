@@ -248,6 +248,11 @@ class leaveControlls extends Controller
             ->whereDate('created_at', $request->date)
             ->groupBy('user_id')
             ->first();
-        return $duration;
+        $created_at = DB::table('attendances')
+            ->select('created_at')
+            ->where('user_id', $id)
+            ->whereDate('created_at', $request->date)
+            ->first();
+        return ['duration' => $duration,'created_at' => $created_at];
     }
 }

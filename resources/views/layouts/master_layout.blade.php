@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/plugins/notify/css/notifIt.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.css') }}">
     <title>Laravel - @yield('title', 'website')</title>
 
@@ -405,11 +404,9 @@
         <a href="#top" id="back-to-top"><i class="las la-angle-double-up"></i></a>
     </div>
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/popper.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/ionicons/ionicons.js') }}"></script>
-    <script src="{{ asset('assets/plugins/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
@@ -420,11 +417,7 @@
     <script src="{{ asset('assets/plugins/sidebar/sidebar.js') }}"></script>
     <script src="{{ asset('assets/plugins/sidebar/sidebar-custom.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
-    <script src="{{ asset('assets/js/themecolor.js') }}"></script>
-    <script src="{{ asset('assets/js/swither-styles.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset('assets/plugins/notify/js/notifIt.js') }}"></script>
-    <script src="{{ asset('assets/plugins/notify/js/notifit-custom.js') }}"></script>
     <script src="{{ asset('assets/plugins/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/moment/min/locales.min.js') }}"></script>
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>

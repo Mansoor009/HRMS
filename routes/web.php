@@ -8,7 +8,7 @@ use App\Http\Controllers\leaveControlls;
 Route::controller(showController::class)->group(function () {
     Route::get('/register', 'registerView')->name('register');
     Route::post('/register', 'registerControl')->name('register.url');
-    Route::get('/login', 'logInView')->name('login');
+    Route::get('/', 'logInView')->name('login');
     Route::post('/login', 'logInAuth')->name('login.url');
     Route::get('/logout', 'logOut')->name('logut');
 });
