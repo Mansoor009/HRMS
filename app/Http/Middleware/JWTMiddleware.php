@@ -13,7 +13,9 @@ class JWTMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next)
     {
@@ -21,7 +23,7 @@ class JWTMiddleware
             JWTAuth::parseToken()->authenticate();
             return $next($request);
         } catch (Exception $e) {
-            return response(['status' => false, 'message' => 'Invalid Token'],404);
+            return response()->json(['status' => false, 'message' => 'Invalid Token'], 404);
         }
     }
 }

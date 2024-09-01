@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\HttpFoundation\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -26,5 +26,24 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $exception): Response
+    {
+        $response = parent::render($request, $exception);
+
+        // Ensure the response is a proper Response object
+        if (! $response instanceof Response) {
+            return response($response);
+        }
+
+        return $response;
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\showController;
 use App\Http\Controllers\leaveControlls;
+use App\Http\Controllers\SendNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,9 @@ Route::middleware('jwt')->group(function () {
     Route::middleware('member.role')->group(function(){
         Route::get('/member', [showController::class, 'showMemberData'])->name('member.dashboard');
         Route::post('/punchStatus', [showController::class, 'punchStatus'])->name('punch.status');
-        Route::get('/emloyees-leaves', [leaveControlls::class, 'leaveEmpView'])->name('leave.dashboard');
+        Route::get('emloyees-leaves', [leaveControlls::class, 'leaveEmpView'])->name('leave.dashboard');
         Route::post('/emloyees-leaves', [leaveControlls::class, 'leaveEmpControll'])->name('leave.dashboard.controll');
         Route::post('/select', [leaveControlls::class, 'memberLeaveCount'])->name('select.val');
+        Route::get('/send-notification', [SendNotification::class, 'sendNotification']);
     });
 });

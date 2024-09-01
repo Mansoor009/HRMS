@@ -220,7 +220,7 @@ class leaveControlls extends Controller
     {
 
         $detail = User::select('id', 'user_name')->orderBy('id')->get();
-        $attendance = $this->attendance(1);
+        $attendance = $this->attendance(8);
         foreach ($detail as $value) {
             $employee['id'] = $value->id;
             $employee['user_name'] = $value->user_name;

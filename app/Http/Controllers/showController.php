@@ -215,7 +215,8 @@ class showController extends Controller
                 $token = JWTAuth::fromUser($user);
                 return response(['message' => 'Member Succesfully Logging in', 'status' => 'member','token' => $token]);
             } else if ($user->role == 'admin' && $user->status == 1) {
-                return response(['message' => 'Admin Succesfully Logging in', 'status' => 'admin',]);
+                $token = JWTAuth::fromUser($user);
+                return response(['message' => 'Admin Succesfully Logging in', 'status' => 'admin','token' => $token]);
             }
         } else {
             return response(['Message' => 'Wrong Credentials', 'status' => false]);

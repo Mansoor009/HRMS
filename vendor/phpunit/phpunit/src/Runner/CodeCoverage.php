@@ -13,7 +13,6 @@ use function file_put_contents;
 use function sprintf;
 use PHPUnit\Event\Facade as EventFacade;
 use PHPUnit\Event\TestData\MoreThanOneDataSetFromDataProviderException;
-use PHPUnit\Event\TestData\NoDataSetFromDataProviderException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\TextUI\Configuration\CodeCoverageFilterRegistry;
 use PHPUnit\TextUI\Configuration\Configuration;
@@ -40,6 +39,8 @@ use SebastianBergmann\Timer\Timer;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ *
+ * @codeCoverageIgnore
  */
 final class CodeCoverage
 {
@@ -141,7 +142,6 @@ final class CodeCoverage
 
     /**
      * @throws MoreThanOneDataSetFromDataProviderException
-     * @throws NoDataSetFromDataProviderException
      */
     public function start(TestCase $test): void
     {

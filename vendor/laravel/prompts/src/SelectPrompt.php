@@ -2,7 +2,6 @@
 
 namespace Laravel\Prompts;
 
-use Closure;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
@@ -27,7 +26,7 @@ class SelectPrompt extends Prompt
         array|Collection $options,
         public int|string|null $default = null,
         public int $scroll = 5,
-        public ?Closure $validate = null,
+        public mixed $validate = null,
         public string $hint = '',
         public bool|string $required = true,
     ) {
@@ -95,5 +94,13 @@ class SelectPrompt extends Prompt
     public function visible(): array
     {
         return array_slice($this->options, $this->firstVisible, $this->scroll, preserve_keys: true);
+    }
+
+    /**
+     * Determine whether the given value is invalid when the prompt is required.
+     */
+    protected function isInvalidWhenRequired(mixed $value): bool
+    {
+        return $value === null;
     }
 }
