@@ -97,67 +97,66 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import {
-            getAnalytics
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-        import {
-            getMessaging,
-            getToken,
-            onMessage
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
+    {{-- <script type="module"> --}}
+    <script>
+        // import {
+        //     initializeApp
+        // } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        // import {
+        //     getAnalytics
+        // } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        // import {
+        //     getMessaging,
+        //     getToken,
+        //     onMessage
+        // } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js";
+        // // TODO: Add SDKs for Firebase products that you want to use
+        // // https://firebase.google.com/docs/web/setup#available-libraries
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "{{ env('FIREBASE_API_KEY') }}",
-            authDomain: "{{ env('FIREBASE_AUTH_DOMAIN') }}",
-            projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
-            storageBucket: "{{ env('FIREBASE_STORAGE_BUCKET') }}",
-            messagingSenderId: "{{ env('FIREBASE_MESSAGING_SENDER_ID') }}",
-            appId: "{{ env('FIREBASE_APP_ID') }}",
-            measurementId: "{{ env('FIREBASE_MEASUREMENT_ID') }}"
-        };
+        // const firebaseConfig = {
+        //     apiKey: "{{ env('FIREBASE_API_KEY') }}",
+        //     authDomain: "{{ env('FIREBASE_AUTH_DOMAIN') }}",
+        //     projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
+        //     storageBucket: "{{ env('FIREBASE_STORAGE_BUCKET') }}",
+        //     messagingSenderId: "{{ env('FIREBASE_MESSAGING_SENDER_ID') }}",
+        //     appId: "{{ env('FIREBASE_APP_ID') }}",
+        //     measurementId: "{{ env('FIREBASE_MEASUREMENT_ID') }}"
+        // };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        // // Initialize Firebase
+        // const app = initializeApp(firebaseConfig);
+        // const analytics = getAnalytics(app);
 
-        let fcm_token = '';
+        // let fcm_token = '';
 
-        // Get an instance of Firebase Messaging
-        const messaging = getMessaging(app);
+        // // Get an instance of Firebase Messaging
+        // const messaging = getMessaging(app);
 
 
-        // Request permission to show notifications
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-                // Get the FCM token
-                getToken(messaging, {
-                        vapidKey: "{{ env('FIREBASE_VAPID_ID') }}"
-                    })
-                    .then((currentToken) => {
-                        if (currentToken) {
-                            fcm_token = currentToken;
-                        } else {
-                            console.warn(
-                                "No registration token available. Request permission to generate one.");
-                        }
-                    })
-                    .catch((err) => {
-                        console.error("An error occurred while retrieving token:", err);
-                    });
-            } else {
-                console.warn("Notification permission denied.");
-            }
-        }).catch((error) => {
-            console.error("Error requesting notification permission:", error);
-        });
+        // // Request permission to show notifications
+        // Notification.requestPermission().then(permission => {
+        //     if (permission === 'granted') {
+        //         // Get the FCM token
+        //         getToken(messaging, {
+        //                 vapidKey: "{{ env('FIREBASE_VAPID_ID') }}"
+        //             })
+        //             .then((currentToken) => {
+        //                 if (currentToken) {
+        //                     fcm_token = currentToken;
+        //                 } else {
+        //                     console.warn(
+        //                         "No registration token available. Request permission to generate one.");
+        //                 }
+        //             })
+        //             .catch((err) => {
+        //                 console.error("An error occurred while retrieving token:", err);
+        //             });
+        //     } else {
+        //         console.warn("Notification permission denied.");
+        //     }
+        // }).catch((error) => {
+        //     console.error("Error requesting notification permission:", error);
+        // });
 
         $.ajaxSetup({
             headers: {
@@ -172,7 +171,7 @@
             },
             submitHandler: function() {
                 let data = $("#loginForm").serialize();
-                data += "&fcm_token=" + encodeURIComponent(fcm_token);
+                // data += "&fcm_token=" + encodeURIComponent(fcm_token);
                 $('.error').text('');
                 $.ajax({
                     url: '{{ route('login.url') }}',

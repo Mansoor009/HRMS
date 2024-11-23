@@ -4,6 +4,7 @@ use App\Http\Controllers\ForgetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\showController;
 use App\Http\Controllers\leaveControlls;
+use App\Http\Controllers\SendNotification;
 
 Route::controller(showController::class)->group(function () {
     Route::get('/register', 'registerView')->name('register');
@@ -46,5 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/emloyees-leaves', [leaveControlls::class, 'leaveEmpView'])->name('leave.dashboard');
         Route::post('/emloyees-leaves', [leaveControlls::class, 'leaveEmpControll'])->name('leave.dashboard.controll');
         Route::post('/select', [leaveControlls::class, 'memberLeaveCount'])->name('select.val');
+        Route::get('/notification', [SendNotification::class, 'notificationView'])->name('notification');
+        Route::get('/send-notification', [SendNotification::class, 'sendNotification'])->name('send.notification');
     });
 });

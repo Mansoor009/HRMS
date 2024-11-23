@@ -202,6 +202,7 @@ class showController extends Controller
     //login backend code
     public function logInAuth(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'email' => 'required|exists:users',
             'password' => 'required'
@@ -212,9 +213,15 @@ class showController extends Controller
             if ($user->status == 0) {
                 return response(['message' => 'Your Account Is De-Activated', 'status' => 'denied']);
             } else if ($user->role == 'member' && $user->status == 1) {
+                if(isset($request->fcm_token)){
+                    User::where('id', $user->id)->update(['fcm_token' => $request->fcm_token]);
+                }
                 $token = JWTAuth::fromUser($user);
                 return response(['message' => 'Member Succesfully Logging in', 'status' => 'member','token' => $token]);
             } else if ($user->role == 'admin' && $user->status == 1) {
+                if(isset($request->fcm_token)){
+                    User::where('id', $user->id)->update(['fcm_token' => $request->fcm_token]);
+                }
                 $token = JWTAuth::fromUser($user);
                 return response(['message' => 'Admin Succesfully Logging in', 'status' => 'admin','token' => $token]);
             }
