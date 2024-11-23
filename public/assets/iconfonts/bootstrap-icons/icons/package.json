@@ -37,7 +37,9 @@
     "test:vnu": "node build/vnu-jar.js",
     "test": "npm-run-all docs-build --parallel --aggregate-output --continue-on-error test:*"
   },
-  "dependencies": {},
+  "dependencies": {
+    "bootstrap-icons": "file:"
+  },
   "devDependencies": {
     "@twbs/svg-sprite": "^1.6.2",
     "autoprefixer": "^10.2.5",

@@ -304,4 +304,8 @@ class showController extends Controller
             ]);
         }
     }
+
+    public function table(){
+        return view('admin.test');
+    }
 }

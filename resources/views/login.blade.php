@@ -86,7 +86,6 @@
     </div>
     <!-- page closed -->
     <!-- /main-signin-wrapper -->
-
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/popper.min.js') }}"></script>
@@ -98,7 +97,68 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js' }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import {
+            getAnalytics
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+        import {
+            getMessaging,
+            getToken,
+            onMessage
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "{{ env('FIREBASE_API_KEY') }}",
+            authDomain: "{{ env('FIREBASE_AUTH_DOMAIN') }}",
+            projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
+            storageBucket: "{{ env('FIREBASE_STORAGE_BUCKET') }}",
+            messagingSenderId: "{{ env('FIREBASE_MESSAGING_SENDER_ID') }}",
+            appId: "{{ env('FIREBASE_APP_ID') }}",
+            measurementId: "{{ env('FIREBASE_MEASUREMENT_ID') }}"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        let fcm_token = '';
+
+        // Get an instance of Firebase Messaging
+        const messaging = getMessaging(app);
+
+
+        // Request permission to show notifications
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                // Get the FCM token
+                getToken(messaging, {
+                        vapidKey: "{{ env('FIREBASE_VAPID_ID') }}"
+                    })
+                    .then((currentToken) => {
+                        if (currentToken) {
+                            fcm_token = currentToken;
+                        } else {
+                            console.warn(
+                                "No registration token available. Request permission to generate one.");
+                        }
+                    })
+                    .catch((err) => {
+                        console.error("An error occurred while retrieving token:", err);
+                    });
+            } else {
+                console.warn("Notification permission denied.");
+            }
+        }).catch((error) => {
+            console.error("Error requesting notification permission:", error);
+        });
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -111,7 +171,8 @@
                 // password: "required"
             },
             submitHandler: function() {
-                let data = $("#loginForm").serialize()
+                let data = $("#loginForm").serialize();
+                data += "&fcm_token=" + encodeURIComponent(fcm_token);
                 $('.error').text('');
                 $.ajax({
                     url: '{{ route('login.url') }}',
@@ -119,7 +180,6 @@
                     data: data,
                     success: function(res) {
                         // let response = jQuery.parseJSON(res);
-                        console.log(res.status);
                         if (res.status == "denied") {
                             Swal.fire({
                                 icon: "warning",
@@ -136,19 +196,17 @@
                             Swal.fire({
                                 icon: "success",
                                 title: "Admin logged in successfully",
-                                text:"Please Remember to Logout Once Work is Done!"
-                            });
-                            setTimeout(() => {
+                                text: "Please Remember to Logout Once Work is Done!"
+                            }).then((result) => {
                                 window.location = '{{ route('admin.dashboard') }}';
-                            }, 500);
+                            });
 
 
-                        }
-                        else if (res.status == "member") {
+                        } else if (res.status == "member") {
                             Swal.fire({
                                 icon: "success",
                                 title: "Member logged in successfully",
-                                text:"Please Remember to Logout Once Work is Done!",
+                                text: "Please Remember to Logout Once Work is Done!",
                             });
                             setTimeout(() => {
                                 window.location = '{{ route('member.dashboard') }}';

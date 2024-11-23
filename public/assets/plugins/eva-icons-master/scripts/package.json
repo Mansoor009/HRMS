@@ -21,5 +21,8 @@
     "nebular",
     "akveo",
     "web font"
-  ]
+  ],
+  "dependencies": {
+    "eva-icons": "file:"
+  }
 }
