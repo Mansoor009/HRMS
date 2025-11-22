@@ -22,16 +22,16 @@ use App\Http\Controllers\SendNotification;
 // });
 
 Route::group(['api'],function(){
-    Route::post('/login', [showController::class, 'logInAuth'])->name('login.url');
+    Route::post('/login', [showController::class, 'logInAuth']);
 });
 
 Route::middleware('jwt')->group(function () {
     Route::middleware('member.role')->group(function(){
-        Route::get('/member', [showController::class, 'showMemberData'])->name('member.dashboard');
-        Route::post('/punchStatus', [showController::class, 'punchStatus'])->name('punch.status');
-        Route::get('emloyees-leaves', [leaveControlls::class, 'leaveEmpView'])->name('leave.dashboard');
-        Route::post('/emloyees-leaves', [leaveControlls::class, 'leaveEmpControll'])->name('leave.dashboard.controll');
-        Route::post('/select', [leaveControlls::class, 'memberLeaveCount'])->name('select.val');
+        Route::get('/member', [showController::class, 'showMemberData']);
+        Route::post('/punchStatus', [showController::class, 'punchStatus']);
+        Route::get('emloyees-leaves', [leaveControlls::class, 'leaveEmpView']);
+        Route::post('/emloyees-leaves', [leaveControlls::class, 'leaveEmpControll']);
+        Route::post('/select', [leaveControlls::class, 'memberLeaveCount']);
         Route::get('/send-notification', [SendNotification::class, 'sendNotification']);
     });
 });
